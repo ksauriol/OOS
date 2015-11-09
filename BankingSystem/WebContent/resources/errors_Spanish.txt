@@ -1,0 +1,25 @@
+ADD_MEMBER_PROFILE_FAILED Error al añadir el perfil a la base de datos
+DATE_AND_TIME_INVALID La fecha y la hora no son válidos
+DATE_EMPTY La fecha no puede estar vacío o contener sólo espacio en blanco
+DATE_HAS_INVALID_CHARS La fecha contiene caracteres no válidos
+DB_CONFIG_NOT_FOUND No se ha podido base de datos de acceso: el archivo de configuración de base de datos no encontrado
+DOB_INVALID Su fecha de nacimiento no es válida
+EMAIL_EMPTY Tu email no puede estar vacío o sólo contienen espacios en blanco
+EMAIL_INVALID Tu email no es válida
+EMAIL_TOO_LONG Su dirección de correo electrónico no puede contener más de 30 caracteres
+FIRST_NAME_HAS_INVALID_CHARS Su nombre contiene caracteres no válidos
+FIRST_NAME_TOO_LONG Su nombre no puede contener más de 30 caracteres
+GENDER_INVALID Su género no es válido
+LAST_NAME_HAS_INVALID_CHARS Su apellido contiene caracteres no válidos
+LAST_NAME_TOO_LONG Su apellido no puede contener más de 30 caracteres
+MIDDLE_NAME_HAS_INVALID_CHARS Su segundo nombre contiene caracteres no válidos
+MIDDLE_NAME_TOO_LONG Su segundo nombre no puede contener más de 30 caracteres
+PASSWORDS_DO_NOT_MATCH Sus contraseñas presentados no coinciden entre sí
+PASSWORD_EMPTY La contraseña no puede estar vacío o sólo contienen espacios en blanco
+PASSWORD_TOO_SHORT Su contraseña debe contener como mínimo 6 caracteres
+PASSWORD_TOO_LONG Tu contraseña no puede contener más de 20 caracteres
+PHONE_INVALID Su número de teléfono no es válido
+PHONE_TOO_LONG Su número de teléfono no puede contener más de 15 caracteres
+TIME_EMPTY El tiempo no puede estar vacía o contener sólo espacio en blanco
+TIME_HAS_INVALID_CHARS El tiempo contiene caracteres no válidos
+USER_NAME_EXISTS nombre de usuario ya existe. Por favor, pruebe con otra.
