@@ -5,11 +5,20 @@ abstract class GenericModelObject {
     
     public function extractForm($arguments, $index) {
         $value = "";
-        if (isset($arguments[$index])) {
+        
+        if (!isset($arguments[$index])) {
+            if (isset($arguments[strtolower($index)])) {
+                $value = trim($arguments[strtolower($index)]);
+                $value = stripslashes($value);
+                $value = htmlspecialchars($value);
+            }
+        }
+        else {
             $value = trim($arguments[$index]);
             $value = stripslashes($value);
             $value = htmlspecialchars($value);
         }
+        
         return $value;
     }
     

@@ -35,6 +35,7 @@ LONGITUDE_TOO_LONG Longitude cannot be longer than 50 characters.
 LATITUDE_TOO_LONG Latitude cannot be longer than 50 characters.
 ALTITUDE_TOO_LONG Altitude cannot be longer than 50 characters.
 GPSID_DOES_NOT_EXIST GPS datum not found.
+GPS_ADD_FAILED Failed to add GPS.
 GPS_EDIT_FAILED Failed to edit GPS.
 GPS_GET_ALL_FAILED Failed to retreive all GPS data.
 GPS_GET_FAILED Failed to retreive the requested GPS data.

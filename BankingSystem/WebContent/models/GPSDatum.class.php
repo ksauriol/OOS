@@ -1,5 +1,5 @@
 <?php
-class GPSDatum extends GenericModelObject {
+class GPSDatum extends GenericModelObject implements JsonSerializable {
     
     private $arguments;
     
@@ -12,16 +12,12 @@ class GPSDatum extends GenericModelObject {
     
     const MAX_LONGITUDE = 50;
     const MAX_LATITUDE = 50;
-    const MAX_ALTITUDE = 15;
+    const MAX_ALTITUDE = 50;
     
     public function __construct($args = null) {
         $this->arguments = $args;
         Messages::reset();
         $this->initialize();
-    }
-    
-    public function getProfileID() {
-        return $this->profileID;
     }
     
     public function getID() {
@@ -49,37 +45,38 @@ class GPSDatum extends GenericModelObject {
     }
     
     public function getDateAndTime() {
-        return $this->dateAndTime;
+        return $this->dateAndTime->format('Y-m-d H:i:s');
+    }
+    
+    // convert date/time output to ISO format, which should be easy to parse on the front-end (I think)
+    public function getISODateAndTime() {
+        $isoDateTime = $this->dateAndTime->format('Y-m-d H:i:s');
+        $isoDateTime[10] = 'T';
+        return $isoDateTime;
     }
     
     // Returns data fields as an associative array
     public function getParameters() {
-        // convert date/time output to ISO format, which should be easy to parse on the front-end
-        $isoDateTime = $this->datetime->format('Y-m-d H:i');
-        $isoDateTime[10] = 'T';
         $paramArray = array(
             'gpsID' => $this->gpsID,
             'profileID' => $this->profileID,
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
             'altitude' => $this->altitude,
-            'dateAndTime' => $isoDateTime
+            'dateAndTime' => self::getISODateAndTime()
         );
         
         return $paramArray;
     }
     
     public function __toString() {
-        // convert date/time output to ISO format, which should be easy to parse on the front-end
-        $isoDateTime = $this->datetime->format('Y-m-d H:i');
-        $isoDateTime[10] = 'T';
         $str =
             "GPS ID: [" . $this->gpsID . "]\n" .
             "Profile ID: [" . $this->profileID . "]\n" .
             "Longitude: [" . $this->longitude . "]\n" .
             "Latitude: [" . $this->latitude . "]\n" .
             "Altitude: [" . $this->altitude . "]\n" .
-            "Date/Time: [" . $this->dateAndTime . "]";
+            "Date/Time: [" . self::getISODateAndTime() . "]";
         
         return $str;
     }
@@ -155,14 +152,21 @@ class GPSDatum extends GenericModelObject {
     
     private function validateDateAndTime() {
         // the date and time may be present as a single value or as separate values
-        if (array_key_exists('dateAndTime', $this->formInput)) {
-            $datetime = $this->extractForm($this->formInput, "dateAndTime");
-            list($date, $time) = preg_split("/ /", $datetime);
+        $dateAndTime = $this->extractForm($this->arguments, "dateAndTime");
+        if (!empty($dateAndTime)) {
+            if (strpos($dateAndTime, 'T') !== false)
+                list($date, $time) = explode("T", $dateAndTime);
+            else if (strpos($dateAndTime, ' ') !== false)
+                list($date, $time) = explode(" ", $dateAndTime);
+            else {
+                $date = $dateAndTime;
+                $time = '';
+            }
         } else {
-            $date = $this->extractForm($this->formInput, "date");
-            $time = $this->extractForm($this->formInput, "time");
+            $date = $this->extractForm($this->arguments, "date");
+            $time = $this->extractForm($this->arguments, "time");
         }
-        $this->datetime = new DateTime();
+        $this->dateAndTime = new DateTime();
         
         if (empty($date)) {
             $this->setError("dateAndTime", "DATE_EMPTY");
@@ -192,7 +196,20 @@ class GPSDatum extends GenericModelObject {
             return;
         }
         
-        $this->datetime = $dt;
+        $this->dateAndTime = $dt;
+    }
+    
+    // this function's return value is used for json_encode() function
+    public function jsonSerialize() {
+        $object = new stdClass();
+        $object->gpsID = $this->gpsID;
+        $object->profileID = $this->profileID;
+        $object->longitude = $this->longitude;
+        $object->latitude = $this->latitude;
+        $object->altitude = $this->altitude;
+        $object->dateAndTime = self::getISODateAndTime();
+        
+        return $object;
     }
 }
 ?>

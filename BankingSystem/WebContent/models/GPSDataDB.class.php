@@ -10,7 +10,7 @@ class GPSDataDB {
             $stmt = $db->prepare(
                 "insert into GPSData (profileID, longitude, latitude,
                     altitude, dateAndTime)
-                values (:profileID, :longitude, :latitude, :altitude, :dateAndtime)"
+                values (:profileID, :longitude, :latitude, :altitude, :dateAndTime)"
             );
             $stmt->execute(array(
                 ":profileID" => $gpsDatum->getProfileID(),
@@ -22,9 +22,11 @@ class GPSDataDB {
             $returnGPSID = $db->lastInsertId("gpsID");
             
         } catch (PDOException $e) {
-            $gpsDatum->setError("GPSDataDB", "ADD_GPS_FAILED");
+            $gpsDatum->setError('GPSDataDB', 'GPS_ADD_FAILED');
+            return $e->getMessage();
         } catch (RuntimeException $e) {
             $gpsDatum->setError("database", "DB_CONFIG_NOT_FOUND");
+            return $e->getMessage();
         }
         
         return $returnGPSID;
@@ -33,36 +35,42 @@ class GPSDataDB {
     public static function editGPS($gpsDatum) {
         
         try {
-            $db = Database::getDB ();
-            if (is_null($gpsDatum) || $gpsDatum->getErrorCount() > 0)
-                return $gpsDatum;
+            $db = Database::getDB();
+            if (is_null($gpsDatum) || $gpsDatum->getErrorCount() > 0) {
+                $gpsDatum->setError('GPSDataDB', 'GPS_EDIT_FAILED');
+                return 'GPSDataDB::editGPS : gpsDatum argument was null or had errors';
+            }
             
-            $checkForExisting = GPSDataDB::getGPSBy('gpsID', $gpsDatum->getID());
-            if (empty($checkUser))
+            $checkForExisting = self::getGPSBy('gpsID', $gpsDatum->getID());
+            if (empty($checkForExisting)) {
                 $gpsDatum->setError('gpsID', 'GPSID_DOES_NOT_EXIST');
-
-            if ($gpsDatum->getErrorCount() > 1)
-                return $gpsDatum;
+                return "A GPS entry with ID of " . $gpsDatum->getID() . " was not found.";
+            }
             
             $stmt = $db->prepare(
                 "update GPSData
-                set longitude = :longitude, latitude = :latitude,
+                set profileID = :profileID, longitude = :longitude, latitude = :latitude,
                     altitude = :altitude, dateAndTime = :dateAndTime
-                where profileID = :profileID
-                and dateAndTime = :dateAndTime"
+                where gpsID = :gpsID"
             );
             $stmt->execute(array(
+                ":profileID" => $gpsDatum->getProfileID(),
                 ":longitude" => $gpsDatum->getLongitude(),
                 ":latitude" => $gpsDatum->getLatitude(),
                 ":altitude" => $gpsDatum->getAltitude(),
                 ":dateAndTime" => $gpsDatum->getDateAndTime(),
-                ":profileID" => $gpsDatum->getProfileID()
+                ":gpsID" => $gpsDatum->getID()
             ));
+            
+            if ($stmt->rowCount() != 1)
+                throw new PDOException("" . $stmt->rowCount() . " row affected. Expected 1.");
             
         } catch (PDOException $e) {
             $gpsDatum->setError('GPSDataDB', 'GPS_EDIT_FAILED');
+            return $e->getMessage();
         } catch (RuntimeException $e) {
             $gpsDatum->setError("database", "DB_CONFIG_NOT_FOUND");
+            return $e->getMessage();
         }
 
         return $gpsDatum;

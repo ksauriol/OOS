@@ -46,7 +46,7 @@ create table GPSData(
     altitude        varchar(50) not null,
     dateAndTime     datetime not null,
     foreign key (profileID) references Profiles (profileID),
-    primary key (profileID, dateAndTime)
+    unique (profileID, dateAndTime)
 );
 
 insert into Profiles(firstName, email, SSN)
@@ -65,3 +65,5 @@ insert into Profiles (firstName, middleName, lastName, email, phone, gender, add
     values ('Sarah', 'Katherine', 'Kinsberg', 'sarah@email.com', '210-555-5887', 'female', '536 Lasseter Dr, MO 63044', '1982-10-01', 4039810595);
 insert into Profiles (firstName, middleName, lastName, email, phone, gender, address, dob, SSN)
     values ('Daniel', 'Jonathan', 'Jacobson', 'daniel@email.com', '210-555-1059', 'male', '482 Sugar Ln, San Antonio, TX 78249', '1992-11-12', 694968483);
+
+update Profiles set password = 'pass123' where email = 'bob@email.com';

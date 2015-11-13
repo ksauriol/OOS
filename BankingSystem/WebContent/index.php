@@ -21,10 +21,13 @@ explode('/', $url, 5) + array("", "", "", "", null);
 	 $_SESSION['arguments'] = $arguments;*/
 //print_r($url.'<br>');
 $part = preg_split("/\/BankingSystem\//", $url, null, PREG_SPLIT_NO_EMPTY);
-$urlPieces = isset($part[1]) ? preg_split("/\//", $part[1], null, PREG_SPLIT_NO_EMPTY) : array();
 $base = $part[0];
+if (isset($part[1])) {
+    if ( ($pos = strpos($part[1], '?')) !== false)
+        $part[1] = substr($part[1], 0, $pos); // cut off everything after the question mark (data after ? is accessible via $_GET superglobal associative array)
+}
+$urlPieces = isset($part[1]) ? preg_split("/\//", $part[1], null, PREG_SPLIT_NO_EMPTY) : array();
 $numPieces = count($urlPieces);
-//print_r($numPieces.'<br>');
 if ($numPieces > 0) 
     $control = $urlPieces[0];
 if ($numPieces > 1)
@@ -34,9 +37,10 @@ if ($numPieces > 1)
 switch ($control) {
     case 'account' : ProfileController::run($arguments); break;
     case 'bank'    : BankController::run($arguments); break;
-    case 'login'   : LoginController::run(array_merge(array($control), $arguments));
-    case 'logout'  : LoginController::run(array_merge(array($control), $arguments));
-    default: View::run();break;
+    case 'login'   : LoginController::run(array_merge(array($control), $arguments)); break;
+    case 'logout'  : LoginController::run(array_merge(array($control), $arguments)); break;
+    case 'gps'     : GPSController::run($arguments); break;
+    default: View::run(); break;
       /*  $replyMsg = new ReplyMessage();
         $replyMsg->status = 'failed';
         $replyMsg->message = "$control is not recognized command";
