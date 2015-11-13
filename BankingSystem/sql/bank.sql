@@ -38,6 +38,17 @@ create table Accounts(
     foreign key (profileID) references Profiles (profileID) 
 );
 
+create table GPSData(
+    gpsID           integer primary key auto_increment,
+    profileID       integer not null,
+    longitude       varchar(50) not null,
+    latitude        varchar(50) not null,
+    altitude        varchar(50) not null,
+    dateAndTime     datetime not null,
+    foreign key (profileID) references Profiles (profileID),
+    primary key (profileID, dateAndTime)
+);
+
 insert into Profiles(firstName, email, SSN)
 	VALUES("firstGuy", "first@email.com", 219543819);
 insert into Profiles(firstName, email, SSN)
