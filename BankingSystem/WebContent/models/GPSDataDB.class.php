@@ -41,11 +41,12 @@ class GPSDataDB {
                 return 'GPSDataDB::editGPS : gpsDatum argument was null or had errors';
             }
             
-            $checkForExisting = self::getGPSBy('gpsID', $gpsDatum->getID());
-            if (empty($checkForExisting)) {
+            $checkForExisting = self::getGPSByID($gpsDatum->getID());
+            if ($checkForExisting === false) {
                 $gpsDatum->setError('gpsID', 'GPSID_DOES_NOT_EXIST');
                 return "A GPS entry with ID of " . $gpsDatum->getID() . " was not found.";
-            }
+            } else if (!($checkForExisting instanceof GPSDatum))
+                throw new PDOException($checkForExisting);
             
             $stmt = $db->prepare(
                 "update GPSData
@@ -87,7 +88,6 @@ class GPSDataDB {
         
             foreach ($stmt as $row) {
                 $gps = new GPSDatum($row);
-
                 if (!is_object($gps) || $gps->getErrorCount() != 0)
                     throw new PDOException("Failed to create valid GPS datum from database entry.");
                 
@@ -102,18 +102,45 @@ class GPSDataDB {
         return $allGPSData;
     }
     
-    // returns a GPSDatum object whose $type field has value $value
-    public static function getGPSBy($type, $value) {
-        $allowed = ['gpsID'];
-        $gps = null;
+    // returns an array of GPSDatum objects associated with the specified profileID, or an error message on failure
+    public static function getGPSByMember($profileID) {
+        $allGPSData = array();
         
         try {
-            if (!in_array($type, $allowed))
-                throw new PDOException("$type not allowed search criterion for GPS data");
-            
             $db = Database::getDB();
-            $stmt = $db->prepare("select * from GPSData where ($type = :$type)");
-            $stmt->execute(array(":$type" => $value));
+            $stmt = $db->prepare(
+                "select gpsID, profileID, longitude, latitude, altitude, dateAndTime
+                from Profiles join GPSData using (profileID)
+                where profileID = :profileID"
+            );
+            $stmt->execute(array(":profileID" => $profileID));
+            
+            foreach ($stmt as $row) {
+                $gps = new GPSDatum($row);
+                if (!is_object($gps) || $gps->getErrorCount() != 0)
+                    throw new PDOException("Failed to create valid GPS datum from database entry.");
+            
+                $allGPSData[] = $gps;
+            }
+        
+        } catch (PDOException $e) {
+            return $e->getMessage();
+        } catch (RuntimeException $e) {
+            return $e->getMessage();
+        }
+        
+        return $allGPSData;
+    }
+    
+    // returns a GPSDatum object whose $type field has value $value.
+    // returns false when data not found, and returns an error message on error
+    public static function getGPSByID($gpsID) {
+        $gps = false;
+        
+        try {
+            $db = Database::getDB();
+            $stmt = $db->prepare("select * from GPSData where gpsID = :gpsID");
+            $stmt->execute(array(":gpsID" => $gpsID));
             
             if(count($stmt) > 1)
                 throw new PDOException("Error: multiple results returned");
@@ -123,14 +150,15 @@ class GPSDataDB {
                 $gps = new GPSDatum($row);
             
         } catch (PDOException $e) {
-            $gpsDatum->setError('GPSDataDB', 'GPS_GET_FAILED');
+            return $e->getMessage();
         } catch (RuntimeException $e) {
-            $gpsDatum->setError("database", "DB_CONFIG_NOT_FOUND");
+            return $e->getMessage();
         }
         
         return $gps;
     }
     
+    // returns true on success, or an error message on failure
     public static function deleteGPSBy($type, $value) {
         $allowed = ['gpsID'];
         
@@ -138,7 +166,7 @@ class GPSDataDB {
             if (!in_array($type, $allowed))
                 throw new PDOException("$type not allowed search criterion for GPS data");
         
-            // make sure target exists
+            // make sure a single target exists
             $db = Database::getDB();
             $stmt = $db->prepare("select * from GPSData where ($type = :$type)");
             $stmt->execute(array(":$type" => $value));
@@ -150,13 +178,16 @@ class GPSDataDB {
             // delete the data
             $stmt = $db->prepare("delete from GPSData where ($type = :$type)");
             $stmt->execute(array(":$type" => $value));
+            
+            if ($stmt->rowCount() != 1)
+                throw new PDOException("" . $stmt->rowCount() . " row affected. Expected 1.");
         
         } catch (PDOException $e) {
             $gpsDatum->setError('GPSDataDB', 'GPS_DELETE_FAILED');
-            return false;
+            return $e->getMessage();
         } catch (RuntimeException $e) {
             $gpsDatum->setError("database", "DB_CONFIG_NOT_FOUND");
-            return false;
+            return $e->getMessage();
         }
         
         return true;

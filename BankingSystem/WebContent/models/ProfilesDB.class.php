@@ -112,7 +112,7 @@ class ProfilesDB {
     // returns a Profile object whose $type field has value $value
     public static function getProfileBy($type, $value) {
         $allowed = ['profileID', 'email','SSN'];
-      $profile = null;
+        $profile = null;
         
         try {
             if (!in_array($type, $allowed))

@@ -6,11 +6,12 @@
  * /gps/delete?email=EMAIL&password=PASSWORD&gpsid=GPSID
  * /gps/getall?email=EMAIL&password=PASSWORD
  * 
- * Example add string:
+ * Example add string (preceded with http://hostname/BankingSystem):
  * /gps/add?email=bob@email.com&password=pass123&latitude=32.03565623929663&longitude=-98.07892084121704&altitude=48.07584934121844&dateAndTime=2015-11-12T23:45:25
- * Example edit string:
+ * Example edit strings:
  * /gps/edit?email=bob@email.com&password=pass123&gpsid=3&latitude=22.03565623929663&longitude=-88.07892084121704&altitude=33.07584934121844&dateAndTime=2015-11-22T23:44:25
- * Example delete string:
+ * /gps/add?email=bob@email.com&password=pass123&latitude=56.0349379502183&longitude=-68.01029583431704&altitude=57.07185836792844&dateAndTime=2015-11-13T09:24:14
+ * Example delete strings:
  * /gps/delete?email=bob@email.com&password=pass123&gpsid=3
  * Example getall string:
  * /gps/getall?email=bob@email.com&password=pass123
@@ -47,8 +48,9 @@ class GPSController {
     }
     
     private static function add() {
-        $profileID = 3;                   // TODO verify email and password, and retreive associated profileID
-        $_GET['profileID'] = $profileID;
+        // authorize request
+        if ( ($_GET['profileID'] = self::verifyMember()) === false)
+            return;
         
         // create new GPSDatum object
         $gps = new GPSDatum($_GET);
@@ -70,11 +72,12 @@ class GPSController {
     }
     
     private static function edit() {
-        $profileID = 3;                   // TODO verify email and password, and retreive associated profileID
-        $_GET['profileID'] = $profileID;
+        // authorize request
+        if ( ($_GET['profileID'] = self::verifyMember()) === false)
+            return;
         
         // check for gpsid argument (because the GPSDatum constructor doesn't throw an error when gpsid is missing)
-        if (!isset($_GET['gpsid'])) {
+        if (!isset($_GET['gpsid']) && !isset($_GET['gpsID'])) {
             self::outputMessage(self::CODE_BAD_REQUEST, 'Missing GPS ID', 'Argument gpsid expected for editing a GPS entry');
             return;
         }
@@ -98,7 +101,65 @@ class GPSController {
     }
     
     private static function delete() {
+        // authorize request
+        if ( self::verifyMember() === false)
+            return;
         
+        // make sure gpsID was given
+        if (!isset($_GET['gpsid']) && !isset($_GET['gpsID'])) {
+            self::outputMessage(self::CODE_BAD_REQUEST, 'Missing GPS ID', 'Argument gpsid expected for deleting a GPS entry');
+            return;
+        }
+        
+        // delete GPS data
+        $gpsID = isset($_GET['gpsid']) ? $_GET['gpsid'] : $_GET['gpsID'];
+        if ( ($return = GPSDataDB::deleteGPSBy('gpsID', $gpsID)) !== true) {
+            self::outputMessage(self::CODE_BAD_REQUEST, 'Failed to delete GPS data', $return);
+            return;
+        }
+        
+        // return success message
+        self::outputMessage(self::CODE_SUCCESS, 'GPS data deleted successfully', "GPS data with ID $gpsID deleted successfully.");
+    }
+    
+    private static function getAll() {
+        // authorize request
+        if ( ($profileID = self::verifyMember()) === false)
+            return;
+        
+        // retreive GPS data from the database
+        $return = GPSDataDB::getGPSByMember($profileID);
+        if (!is_array($return)) {
+            self::outputMessage(self::CODE_BAD_REQUEST, 'Failed to retreive GPS data', $return);
+            return;
+        }
+        
+        // return success messge, which includes a JSON copy of the returned array of GPSDatum objects
+        self::outputMessage(self::CODE_SUCCESS, 'GPS data retreived successfully', 'GPS data retreived successfully', $return);
+    }
+    
+    private static function verifyMember() {
+        if (!isset($_GET['email']) || !isset($_GET['password'])) {
+            self::outputMessage(self::CODE_BAD_REQUEST, 'Missing email or password', 'Argument "email" and "password" expected.');
+            return false;
+        }
+        
+        // retreive member data from database
+        $profile = ProfilesDB::getProfileBy('email', $_GET['email']);
+        if (is_null($profile)) {
+            // TODO modify ProfilesDB to return different values on error and when no matching profile is found, then swap output message below
+//             self::outputMessage(self::CODE_INTERNAL_SERVER_ERROR, 'Failed to verify GPS data', 'An internal error occured. Try again later.');
+            self::outputMessage(self::CODE_UNAUTHORIZED, 'Authorization failed.', 'Incorrect email or password.');
+            return false;
+        }
+        
+        // verify
+        if ($_GET['password'] !== $profile->getPassword()) {
+            self::outputMessage(self::CODE_UNAUTHORIZED, 'Authorization failed.', 'Incorrect email or password.');
+            return false;
+        }
+        
+        return $profile->getProfileID();
     }
     
     // outputs a json-encoded response according to the RESTful API (I think)
