@@ -21,7 +21,7 @@ explode('/', $url, 5) + array("", "", "", "", null);
 	 $_SESSION['arguments'] = $arguments;*/
 //print_r($url.'<br>');
 $part = preg_split("/\/BankingSystem\//", $url, null, PREG_SPLIT_NO_EMPTY);
-$urlPieces = preg_split("/\//", $part[1], null, PREG_SPLIT_NO_EMPTY);
+$urlPieces = isset($part[1]) ? preg_split("/\//", $part[1], null, PREG_SPLIT_NO_EMPTY) : array();
 $base = $part[0];
 $numPieces = count($urlPieces);
 //print_r($numPieces.'<br>');
