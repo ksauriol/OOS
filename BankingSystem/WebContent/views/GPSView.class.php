@@ -268,51 +268,51 @@ class GPSView {
                 <div class="form-group">
                     <label for="gps_gpsID_edit" class="control-label col-xs-3 col-sm-12 col-md-4">gpsID</label>
                     <div class="col-xs-9 col-sm-12 col-md-8">
-                        <input type="text" id="gps_gpsID_edit" name="profileID" class="form-control" size="10" autofocus="autofocus" required="required" maxlength="10" tabindex="1" pattern="^[0-9]+$" />
+                        <input type="text" id="gps_gpsID_edit" name="profileID" class="form-control" size="10" autofocus="autofocus" required="required" maxlength="10" tabindex="10" pattern="^[0-9]+$" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="gps_profileID_edit" class="control-label col-xs-3 col-sm-12 col-md-4">profileID</label>
                     <div class="col-xs-9 col-sm-12 col-md-8">
-                        <input type="text" id="gps_profileID_edit" name="profileID" class="form-control" size="10" autofocus="autofocus" required="required" maxlength="10" tabindex="1" pattern="^[0-9]+$" />
+                        <input type="text" id="gps_profileID_edit" name="profileID" class="form-control" size="10" autofocus="autofocus" required="required" maxlength="10" tabindex="11" pattern="^[0-9]+$" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="gps_latitude_edit" class="control-label col-xs-3 col-sm-12 col-md-4">latitude</label>
                     <div class="col-xs-9 col-sm-12 col-md-8">
-                        <input type="text" id="gps_latitude_edit" name="latitude" class="form-control" size="10" required="required" maxlength="50" tabindex="2" />
+                        <input type="text" id="gps_latitude_edit" name="latitude" class="form-control" size="10" required="required" maxlength="50" tabindex="12" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="gps_longitude_edit" class="control-label col-xs-3 col-sm-12 col-md-4">longitude</label>
                     <div class="col-xs-9 col-sm-12 col-md-8">
-                        <input type="text" id="gps_longitude_edit" name="longitude" required="required" size="10" maxlength="50" class="form-control" tabindex="3" />
+                        <input type="text" id="gps_longitude_edit" name="longitude" required="required" size="10" maxlength="50" class="form-control" tabindex="13" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="gps_altitude_edit" class="control-label col-xs-3 col-sm-12 col-md-4">altitude</label>
                     <div class="col-xs-9 col-sm-12 col-md-8">
-                        <input type="text" id="gps_altitude_edit" name="altitude" required="required" size="10" maxlength="50" class="form-control" tabindex="4" />
+                        <input type="text" id="gps_altitude_edit" name="altitude" required="required" size="10" maxlength="50" class="form-control" tabindex="14" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="gps_dateAndTime_edit" class="control-label col-xs-3 col-sm-12 col-md-4">dateAndTime</label>
                     <div class="col-xs-9 col-sm-12 col-md-8">
-                        <input type="text" id="gps_dateAndTime_edit" name="notes" required="required" class="form-control" size="30" maxlength="25" tabindex="5" title="yyyy-mm-dd hh:mm:ss" />
+                        <input type="text" id="gps_dateAndTime_edit" name="notes" required="required" class="form-control" size="30" maxlength="25" tabindex="15" title="yyyy-mm-dd hh:mm:ss" />
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="gps_email_edit" class="control-label col-xs-3 col-sm-12 col-md-4">email</label>
                     <div class="col-xs-9 col-sm-12 col-md-8">
-                        <input type="text" id="gps_email_edit" name="email" required="required" class="form-control" size="30" maxlength="25" tabindex="6" />
+                        <input type="text" id="gps_email_edit" name="email" required="required" class="form-control" size="30" maxlength="25" tabindex="16" />
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="gps_password_edit" class="control-label col-xs-3 col-sm-12 col-md-4">password</label>
                     <div class="col-xs-9 col-sm-12 col-md-8">
-                        <input type="text" id="gps_password_edit" name="password" required="required" class="form-control" size="30" maxlength="25" tabindex="7" />
+                        <input type="text" id="gps_password_edit" name="password" required="required" class="form-control" size="30" maxlength="25" tabindex="17" />
                     </div>
                 </div>
                 
@@ -320,14 +320,14 @@ class GPSView {
                     
                     <div class="btn-group btn-group-justified col-sm-12" role="group">
                         <div class="btn-group" role="group">
-                            <button type="button" id="gps_generate_edit" class="btn btn-primary" tabindex="8">
+                            <button type="button" id="gps_generate_edit" class="btn btn-primary" tabindex="18">
                                 <span class="glyphicon glyphicon-plus"></span>
                                 &nbsp;Generate String
                             </button>
                         </div>
                         
                         <div class="btn-group" role="group">
-                            <button type="button" id="gps_clear_edit" class="btn btn-default" tabindex="9">
+                            <button type="button" id="gps_clear_edit" class="btn btn-default" tabindex="19">
                                 <span class="glyphicon glyphicon-remove"></span>
                                 &nbsp;Clear
                             </button>
