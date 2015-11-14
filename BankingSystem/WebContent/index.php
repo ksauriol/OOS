@@ -22,6 +22,7 @@ explode('/', $url, 5) + array("", "", "", "", null);
 //print_r($url.'<br>');
 $part = preg_split("/\/BankingSystem\//", $url, null, PREG_SPLIT_NO_EMPTY);
 $base = $part[0];
+$_GET['base'] = $base;
 if (isset($part[1])) {
     if ( ($pos = strpos($part[1], '?')) !== false)
         $part[1] = substr($part[1], 0, $pos); // cut off everything after the question mark (data after ? is accessible via $_GET superglobal associative array)
@@ -40,6 +41,7 @@ switch ($control) {
     case 'login'   : LoginController::run(array_merge(array($control), $arguments)); break;
     case 'logout'  : LoginController::run(array_merge(array($control), $arguments)); break;
     case 'gps'     : GPSController::run($arguments); break;
+    case 'view'    : ViewController::run($arguments); break;
     default: View::run(); break;
       /*  $replyMsg = new ReplyMessage();
         $replyMsg->status = 'failed';
