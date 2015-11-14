@@ -5,28 +5,68 @@ $(document).ready(function() {
 	$('#gps_clear_edit').click(clearForm);
 	$('#gps_delete').click(deleteGPS_generate);
 	$('#go').click(go);
+	$('#request_url_clear').click(function() { $('#request_url').val(''); } );
+	$('#gps_getall').click(getallGPS_generate);
 	$('#request_url').keydown(checkGoButtonState);
 	
 	// add hover and click listeners for measurement rows
-	$('table#table_gpsData > tbody > tr').each(function(index, element) {
+	$('table > tbody > tr').each(function(index, element) {
+		var tableType;
 		$(element).hover(
 			function() { $(element).addClass('rowHover');    },
 			function() { $(element).removeClass('rowHover'); }
 		);
-		$(element).click(rowClicked);
+		tableType = $(element).attr('id').split('_')[0];
+		if (tableType == 'gps')
+			$(element).click(rowClicked_gps);
+		else if (tableType == 'profile')
+			$(element).click(rowClicked_profile);
 	});
 	
 	checkGoButtonState();
 });
 
+function getallGPS_generate() {
+	if ($('#profiles_table .rowSelected').length == 0) {
+		$('#gps_getall').prop('disabled', true);
+		return;
+	}
+	
+	var urlstring = 'http://' + $('#base').val() + '/BankingSystem/gps/getall?';
+	var profileID = $('#profiles_table .rowSelected').attr('id').split('_')[1];
+	var email = $('#profile_email_' + profileID).text();
+	var password = $('#profile_password_' + profileID).text();
+	
+	urlstring = urlstring + 'email=' + email;
+	urlstring = urlstring + '&password=' + password;
+	
+	$('#request_url').val(urlstring).select();
+	checkGoButtonState();
+}
+
+function rowClicked_profile() {
+	var selected_row;
+	
+	// activate getall button
+	$('#gps_getall').prop('disabled', false).removeClass('btn-default').addClass('btn-primary');
+	
+	// deselect all rows
+	$('#profiles_table > tbody > tr').each(function(index, element) {
+		$(element).removeClass('rowSelected');
+	});
+
+	// select clicked row
+	$(this).addClass('rowSelected');
+}
+
 function deleteGPS_generate(event) {
-	if ($('.rowSelected').length == 0) {
+	if ($('#gps_table .rowSelected').length == 0) {
 		$('#gps_delete').prop('disabled', true);
 		return;
 	}
 	
-	var urlstring = 'http://' + $('#gps_base').val() + '/BankingSystem/gps/delete?';
-	var gpsID = $('.rowSelected').attr('id').split('_')[1];
+	var urlstring = 'http://' + $('#base').val() + '/BankingSystem/gps/delete?';
+	var gpsID = $('#gps_table .rowSelected').attr('id').split('_')[1];
 	var profileID = $('#gps_profileID_' + gpsID).text();
 	var email = $('#profile_email_' + profileID).text();
 	var password = $('#profile_password_' + profileID).text();
@@ -40,14 +80,14 @@ function deleteGPS_generate(event) {
 }
 
 // selects a row when clicked, and fills in the edit form
-function rowClicked(event) {
+function rowClicked_gps(event) {
 	var selected_row;
 	
 	// activate delete button
 	$('#gps_delete').prop('disabled', false).removeClass('btn-default').addClass('btn-danger');
 	
 	// deselect all rows
-	$('#table_gpsData > tbody > tr').each(function(index, element) {
+	$('#gps_table > tbody > tr').each(function(index, element) {
 		$(element).removeClass('rowSelected');
 	});
 
@@ -55,13 +95,13 @@ function rowClicked(event) {
 	$(this).addClass('rowSelected');
 	
 	// fill in edit form (w/values from GPSData table)
-	$('.rowSelected').children().each(function(index, element) {
+	$('#gps_table .rowSelected').children().each(function(index, element) {
 		var col_name = $(element).attr('id').split('_')[1];
 		$('#gps_' + col_name + '_edit').val($(element).text());
 	});
 	
 	// fill in edit form (w/values from Profiles table)
-	var gpsID = $('.rowSelected').attr('id').split('_')[1];
+	var gpsID = $('#gps_table .rowSelected').attr('id').split('_')[1];
 	var profileID = $('#gps_profileID_' + gpsID).text();
 	var email = $('#profile_email_' + profileID).text();
 	var password = $('#profile_password_' + profileID).text();
@@ -88,7 +128,7 @@ function go(event) {
 }
 
 function editGPS_generate(event) {
-	var urlstring = 'http://' + $('#gps_base').val() + '/BankingSystem/gps/edit?';
+	var urlstring = 'http://' + $('#base').val() + '/BankingSystem/gps/edit?';
 	
 	urlstring = urlstring + '&email=' + $('#gps_email_edit').val();
 	urlstring = urlstring + '&password=' + $('#gps_password_edit').val();
@@ -104,7 +144,7 @@ function editGPS_generate(event) {
 }
 
 function addGPS_generate(event) {
-	var urlstring = 'http://' + $('#gps_base_add').val() + '/BankingSystem/gps/add?';
+	var urlstring = 'http://' + $('#base').val() + '/BankingSystem/gps/add?';
 	
 	urlstring = urlstring + '&email=' + $('#gps_email_add').val();
 	urlstring = urlstring + '&password=' + $('#gps_password_add').val();

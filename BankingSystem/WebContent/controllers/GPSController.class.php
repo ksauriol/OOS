@@ -147,9 +147,15 @@ class GPSController {
         // retreive member data from database
         $profile = ProfilesDB::getProfileBy('email', $_GET['email']);
         if (is_null($profile)) {
-            // TODO modify ProfilesDB to return different values on error and when no matching profile is found, then swap output message below
+            /* TODO modify ProfilesDB to return different values on error and when no matching profile is found, then swap output message below
+             * I didn't do it already, because ProfilesDB is used by non-gps-related classes, and I don't want to break them. */
 //             self::outputMessage(self::CODE_INTERNAL_SERVER_ERROR, 'Failed to verify GPS data', 'An internal error occured. Try again later.');
             self::outputMessage(self::CODE_UNAUTHORIZED, 'Authorization failed.', 'Incorrect email or password.');
+            return false;
+        }
+        
+        if (empty($profile->getPassword())) {
+            self::outputMessage(self::CODE_UNAUTHORIZED, 'Member password not set.', 'A password must be set before the requested action can be performed.');
             return false;
         }
         

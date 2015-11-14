@@ -180,7 +180,7 @@ class GPSDataDB {
             $stmt->execute(array(":$type" => $value));
             
             if ($stmt->rowCount() != 1)
-                throw new PDOException("" . $stmt->rowCount() . " row affected. Expected 1.");
+                throw new PDOException("" . $stmt->rowCount() . " rows affected. Expected 1.");
         
         } catch (PDOException $e) {
             $gpsDatum->setError('GPSDataDB', 'GPS_DELETE_FAILED');
