@@ -59,6 +59,7 @@ class GPSView {
             Generate GetAll String, which will request all GPS data for the selected profile. You can also click on GPS data rows
             to select them for deletion, or to fill in the edit form.  Since these commands require an email
             and password, make sure the profile you are trying to add data for has a password assigned to it.
+            Don't forget to refresh this page after making requests to see the updated tables.
             If you find a bug, please let me know.
         </p>
         <table id="profiles_table" class="table table-striped table-hover table-condensed table-responsive">
@@ -160,31 +161,29 @@ class GPSView {
         </div>
         
         <hr />
-        <form action="" method="get">
         
-            <div class="row">
-                <div class="col-xs-4 col-sm-3">
-                    <label id="request_url_label" for="request_url">Request URL</label>
-                </div>
-                <div class="col-xs-3 col-xs-offset-5 col-sm-1 col-sm-offset-8">
-                    <button type="button" id="request_url_clear" class="btn btn-default">Clear</button>
-                </div>
+        <div class="row">
+            <div class="col-xs-4 col-sm-3">
+                <label id="request_url_label" for="request_url">Request URL</label>
             </div>
-            <div class="row">
-                <div class="form-group col-sm-12">
-                    <input type="text" id="request_url" name="gps_urlstring_add" value="" class="form-control" />
-                </div>
+            <div class="col-xs-3 col-xs-offset-5 col-sm-1 col-sm-offset-8">
+                <button type="button" id="request_url_clear" class="btn btn-default">Clear</button>
             </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-12">
+                <input type="text" id="request_url" name="gps_urlstring_add" value="" class="form-control" />
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="form-group col-sm-12">
+                <button type="button" id="go" class="btn btn-default btn-block" disabled="disabled">
+                    Go
+                </button>
+            </div>
+        </div>
             
-            <div class="row">
-                <div class="form-group col-sm-12">
-                    <button type="button" id="go" class="btn btn-default btn-block" disabled="disabled">
-                        Go
-                    </button>
-                </div>
-            </div>
-            
-        </form>
     </div>
 </section>
 <section class="row">
