@@ -144,7 +144,7 @@ class LoginView {
                 </button>
             </div>
             <div class="btn-group" role="group">
-                <button type="button" id="logout_btn_after" class="btn btn-default generator-btn login-btn" disabled="disabled">
+                <button type="button" id="logout_btn_after" class="btn btn-default generator-btn logout-btn" disabled="disabled">
                     <span class="glyphicon glyphicon-ok"></span>
                     &nbsp;Generate Logout String
                 </button>
