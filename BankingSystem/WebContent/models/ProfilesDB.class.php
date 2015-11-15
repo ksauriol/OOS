@@ -26,7 +26,6 @@ class ProfilesDB {
             	":temp"		=>$profile->getTemp(),
             	":timeOfTemp" =>$profile->getTimeOfTemp(),
             	":SSN" => $profile->getSSN()
-              //  ":profileType" => $profile->getProfileType()
             ));
             $returnProfileID = $db->lastInsertId("profileID");
             
@@ -49,13 +48,13 @@ class ProfilesDB {
 			$checkProfile = ProfilesDB::getProfileBy('profileID', $profile->getProfileID());
 			if (empty($checkUser))
 				$profile->setError('profileID', 'USER_DOES_NOT_EXIST');
-			//print_r($profile->getErrorCount()."<br>");
+
 			if ($profile->getErrorCount() > 1)
 				return $profile;
 			
 			$query = "UPDATE Profiles SET firstName = :firstName, password = :password, temp = :temp, timeOfTemp= :timeOfTemp,
-							address = :address, middleName = :middleName, lastName = :lastName, dob = :dob, phone = :phone
-	    			                 WHERE profileID = :profileID";
+						address = :address, middleName = :middleName, lastName = :lastName, dob = :dob, phone = :phone
+	                 WHERE profileID = :profileID";
 	
 			$statement = $db->prepare ($query);
 			$statement->bindValue("firstName", $profile->getFirstName());
@@ -72,11 +71,11 @@ class ProfilesDB {
 			$statement->closeCursor();
 			
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            $profile->setError('profilesDB', 'PROFILE_EDIT_FAILED');
         } catch (RuntimeException $e) {
-            echo $e->getMessage();
+            $profile->setError("database", "DB_CONFIG_NOT_FOUND");
         }
-     //   print_r($profile->__toString()."<br>");
+        
         return $profile;
     }
     
@@ -86,24 +85,23 @@ class ProfilesDB {
         
         try {
             $db = Database::getDB();
-            $stmt = $db->prepare(
-                "select * from Profiles"
-          //	profileID, firstName, middleName, lastName, email, phone, gender, address, dob, profileType
-            );
+            $stmt = $db->prepare("select * from Profiles");
             $stmt->execute();
         
             foreach ($stmt as $row) {
                 $profile = new Profile($row);
-              //  print_r($profile->__toString());
+
                 if (!is_object($profile) || $profile->getErrorCount()!=0)
                     throw new PDOException("Failed to create valid profile");
                 
                 $allProfiles[] = $profile;
             }
+            
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            $profile->setError('profilesDB', 'PROFILE_GET_ALL_FAILED');
         } catch (RuntimeException $e) {
-            echo $e->getMessage();
+            if (isset($profile))
+                $profile->setError("database", "DB_CONFIG_NOT_FOUND");
         }
         
         return $allProfiles;
@@ -120,9 +118,7 @@ class ProfilesDB {
             
             $db = Database::getDB();
             $stmt = $db->prepare(
-                "select profileID, firstName, middleName, lastName, email,
-                    phone, gender, address, dob, SSN, temp, timeOfTemp, password
-                from Profiles
+                "select * from Profiles
                 where ($type = :$type)");
             $stmt->execute(array(":$type" => $value));
             
@@ -134,9 +130,9 @@ class ProfilesDB {
                 $profile = new Profile($row);
             
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            $profile->setError('profilesDB', 'PROFILE_GET_FAILED');
         } catch (RuntimeException $e) {
-            echo $e->getMessage();
+            $profile->setError("database", "DB_CONFIG_NOT_FOUND");
         }
         
         return $profile;
@@ -153,9 +149,7 @@ class ProfilesDB {
         
             $db = Database::getDB();
             $stmt = $db->prepare(
-                "select profileID, firstName, middleName, lastName, email,
-                    phone, gender, address, dob, SSN, temp, timeOfTemp, password
-                from Profiles
+                "select * from Profiles
                 where ($type = :$type)"
             );
             $stmt->execute(array(":$type" => $value));
@@ -170,10 +164,8 @@ class ProfilesDB {
             $stmt->execute(array(":$type" => $value));
         
         } catch (PDOException $e) {
-            echo $e->getMessage();
             $success = false;
         } catch (RuntimeException $e) {
-            echo $e->getMessage();
             $success = false;
         }
         
@@ -191,9 +183,7 @@ class ProfilesDB {
     
             $db = Database::getDB();
             $stmt = $db->prepare(
-                "select profileID, firstName, middleName, lastName, email,
-                phone, gender, address, dob, SSN, temp, timeOfTemp, password
-                from Profiles
+                "select * from Profiles
                 where ($type = :$type)"
             );
             $stmt->execute(array(":$type" => $value));
@@ -208,14 +198,50 @@ class ProfilesDB {
             $stmt->execute(array(":$type" => $value));
     
         } catch (PDOException $e) {
-            echo $e->getMessage();
             $success = false;
         } catch (RuntimeException $e) {
-            echo $e->getMessage();
             $success = false;
         }
     
         return $success;
+    }
+    
+    public static function logIn($profileID) {
+        try {
+            $db = Database::getDB();
+            $stmt = $db->prepare(
+                "update Profiles set isLoggedIn = true
+                where profileID = :profileID"
+            );
+            $stmt->execute(array(":profileID" => $profileID));
+            
+            $profile = self::getProfileBy('profileID', $profileID);
+        
+        } catch (PDOException $e) {
+            return false;
+        } catch (RuntimeException $e) {
+            return false;
+        }
+        
+        return $profile;
+    }
+    
+    public static function logOut($profileID) {
+        try {
+            $db = Database::getDB();
+            $stmt = $db->prepare(
+                "update Profiles set isLoggedIn = false
+                where profileID = :profileID"
+            );
+            $stmt->execute(array(":profileID" => $profileID));
+    
+        } catch (PDOException $e) {
+            return false;
+        } catch (RuntimeException $e) {
+            return false;
+        }
+    
+        return true;
     }
     
 }

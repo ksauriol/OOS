@@ -27,7 +27,8 @@ create table Profiles(
     temp            varchar(50),
     timeOfTemp        int,
     password        varchar(50),
-    SSN             int (11) NOT NULL unique
+    SSN             int (11) NOT NULL unique,
+    isLoggedIn      boolean default false
 );
 
 -- This table's entries represent a member's accounts, e.g. checkings/savings/investment/etc. (I think)
@@ -50,7 +51,7 @@ create table GPSData(
 );
 
 INSERT INTO Profiles VALUES
-    (1,'steve',null,null,'email@email.com',null,null,null,'0000-00-00','password',0,'rowdy',170483472);
+    (1,'steve',null,null,'email@email.com',null,null,null,'0000-00-00','password',0,'rowdy',170483472, false);
 
 insert into Profiles(firstName, email, SSN)
     VALUES("firstGuy", "first@email.com", 219543819);
@@ -72,7 +73,8 @@ INSERT INTO Profiles (firstName,middleName,lastName,email,phone,gender,address,d
 
 LOCK TABLES Accounts WRITE;
 INSERT INTO Accounts VALUES
-    (0,1,170483472),(1,NULL,955961866),(2,NULL,558994585),
+    -- (0,1,170483472),
+    (1,NULL,955961866),(2,NULL,558994585),
     (3,NULL,878387350),(4,NULL,993279341),(5,NULL,377655658),
     (6,NULL,807871269),(7,NULL,255586479),(8,NULL,442964430),
     (9,NULL,307966663),(10,NULL,716613537),(11,NULL,101523934),

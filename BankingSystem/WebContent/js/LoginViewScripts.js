@@ -1,8 +1,8 @@
 $(document).ready(function() {
 	$('#go').click(go);
 	$('#request_url_clear').click(function() { $('#request_url').val(''); } );
-	$('#login_btn').click(login_generate);
-	$('#logout_btn').click(logout_generate);
+	$('.login-btn').click(login_generate);
+	$('.logout-btn').click(logout_generate);
 	$('#request_url').keydown(checkGoButtonState);
 	
 	// add hover and click listeners for table rows

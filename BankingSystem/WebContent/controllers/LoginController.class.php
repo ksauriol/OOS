@@ -56,14 +56,21 @@ class LoginController {
         if ( ($profile = self::verifyMember()) === false)
             return;
         
+        // check if member is already logged in
+        if ($profile->isLoggedIn()) {
+            self::outputMessage(self::CODE_BAD_REQUEST, 'Member already logged in.', 'The member was already logged in.');
+            return;
+        }
+        
         // log member in
-        if (session_start() === false) {
+        if (session_start() === false || ( $profile = ProfilesDB::logIn($profile->getProfileID()) ) === false) {
             self::outputMessage(self::CODE_INTERNAL_SERVER_ERROR, self::CAUSE_SESSION_CREATE_FAILED, 'Login attempt should have succeeded, but failed for an unknown reason.');
             return;
         }
         
         // user successfully logged in. record that the user has been authenticated, and return success message
-        $_SESSION['authenticated'] = true; // want to know if someone is logged in, in the future? check that (isset($_SESSION) && $_SESSION['authenticated']) evaluates to true
+        if (isset($_SESSION))
+            $_SESSION['authenticated'] = true; // want to know if someone is logged in, in the future? check that (isset($_SESSION) && $_SESSION['authenticated']) evaluates to true
         self::outputMessage(self::CODE_SUCCESS, self::CAUSE_LOGGED_IN, 'Log in successful', $profile);
     }
     
@@ -73,20 +80,21 @@ class LoginController {
         if ( ($profile = self::verifyMember()) === false)
             return;
         
-        if (session_status() === PHP_SESSION_NONE) {
-            self::outputMessage(self::CODE_BAD_REQUEST, self::CAUSE_NOT_LOGGED_IN, 'User cannot log out because user was not logged in: ' . session_status());
+        // check if use was logged in
+        if (! $profile->isLoggedIn()) {
+            self::outputMessage(self::CODE_BAD_REQUEST, 'Member not in.', 'The member was not logged in.');
             return;
         }
         
         // log out
-        unset($_SESSION['authenticated']); // just in case
-        $result = session_destroy();
-        if ($result === false) {
-            self::outputMessage(self::CODE_INTERNAL_SERVER_ERROR, self::CAUSE_SESSION_DESTROY_FAILED, 'User was logged in, but logging out failed.');
-            return;
+        if (isset($_SESSION)) {
+            unset($_SESSION['authenticated']); // just in case
+            $result = session_destroy();
+            session_regenerate_id(true);
         }
-        if (session_regenerate_id(true) === false) {
-            self::outputMessage(self::CODE_SUCCESS, self::CAUSE_SESSION_REGERATION_FAILED, "User logged out, but failed to regenerate session ID. The next login attempt may fail.");
+        
+        if (ProfilesDB::logOut($profile->getProfileID()) === false) {
+            self::outputMessage(self::CODE_INTERNAL_SERVER_ERROR, 'Logout error', 'Logout attempt should have succeeded, but failed for an unknown reason.');
             return;
         }
         

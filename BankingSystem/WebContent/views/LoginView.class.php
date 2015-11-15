@@ -46,14 +46,42 @@ class LoginView {
 <body>
 <div class="container">
 
+<div class="row">
+    <div class="col-sm-12">
+        <p class="alert alert-info">
+            The login and logout commands should both work. I changed the request strings to be more in line with
+            the rest of the API. So now it takes arguments as GET parameters (&amp;name=value). Also, although
+            sessions are still running in the background, the login/logout code uses a new field called
+            &quot;isLoggedIn&quot; to set/get the member's login state. If you find any bugs, let me know.
+            Don't forget to refresh this page after making requests to see the updated tables.
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6 col-sm-offset-3">
+    
+        <div class="btn-group btn-group-justified col-sm-12" role="group">
+            <div class="btn-group" role="group">
+                <button type="button" id="login_btn_before" class="btn btn-default generator-btn login-btn" disabled="disabled">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    &nbsp;Generate Login String
+                </button>
+            </div>
+            <div class="btn-group" role="group">
+                <button type="button" id="logout_btn_before" class="btn btn-default generator-btn logout-btn" disabled="disabled">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    &nbsp;Generate Logout String
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <section class="row">
     <div class="col-sm-12"><?php
         if (!isset($data['profiles']) || empty($data['profiles'])):
                 ?><p>No profiles to show yet</p><?php
         else: ?>
-        <p class="alert alert-info">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non quo est eius illo ut id esse debitis alias iure quod deserunt optio fuga incidunt omnis sed facilis accusamus recusandae? Esse.
-        </p>
+
         <table id="profiles_table" class="table table-striped table-hover table-condensed table-responsive">
             <caption>Profiles</caption>
             <thead>
@@ -71,6 +99,7 @@ class LoginView {
                     <th>timeOfTemp</th>
                     <th>password</th>
                     <th>SSN</th>
+                    <th>isLoggedIn</th>
                 </tr>
             </thead>
             <tbody><?php
@@ -89,6 +118,7 @@ class LoginView {
                     <td id="profile_timeOfTemp_<?=$gps->getProfileID()?>"><?=$gps->getTimeOfTemp()?></td>
                     <td id="profile_password_<?=$gps->getProfileID()?>"><?=$gps->getPassword()?></td>
                     <td id="profile_SSN_<?=$gps->getProfileID()?>"><?=$gps->getSSN()?></td>
+                    <td id="profile_isLoggedIn_<?=$gps->getProfileID()?>"><?=$gps->isLoggedIn() ? 'true' : 'false' ?></td>
                 </tr><?php
             endforeach; ?>
             </tbody>
@@ -101,13 +131,13 @@ class LoginView {
     
         <div class="btn-group btn-group-justified col-sm-12" role="group">
             <div class="btn-group" role="group">
-                <button type="button" id="login_btn" class="btn btn-default generator-btn" disabled="disabled">
+                <button type="button" id="login_btn_after" class="btn btn-default generator-btn login-btn" disabled="disabled">
                     <span class="glyphicon glyphicon-ok"></span>
                     &nbsp;Generate Login String
                 </button>
             </div>
             <div class="btn-group" role="group">
-                <button type="button" id="logout_btn" class="btn btn-default generator-btn" disabled="disabled">
+                <button type="button" id="logout_btn_after" class="btn btn-default generator-btn login-btn" disabled="disabled">
                     <span class="glyphicon glyphicon-ok"></span>
                     &nbsp;Generate Logout String
                 </button>
@@ -118,32 +148,30 @@ class LoginView {
 <div class="row">
     <div class="col-sm-12">
         <hr />
-        <form action="" method="get">
-            <input type="hidden" id="base" name="base" value="<?=$_GET['base']?>" />
-            
-            <div class="row">
-                <div class="col-xs-4 col-sm-3">
-                    <label id="request_url_label" for="request_url">Request URL</label>
-                </div>
-                <div class="col-xs-3 col-xs-offset-5 col-sm-1 col-sm-offset-8">
-                    <button type="button" id="request_url_clear" class="btn btn-default">Clear</button>
-                </div>
+        <input type="hidden" id="base" name="base" value="<?=$_GET['base']?>" />
+        
+        <div class="row">
+            <div class="col-xs-4 col-sm-3">
+                <label id="request_url_label" for="request_url">Request URL</label>
             </div>
-            <div class="row">
-                <div class="form-group col-sm-12">
-                    <input type="text" id="request_url" name="gps_urlstring_add" value="" class="form-control" />
-                </div>
+            <div class="col-xs-3 col-xs-offset-5 col-sm-1 col-sm-offset-8">
+                <button type="button" id="request_url_clear" class="btn btn-default">Clear</button>
             </div>
-            
-            <div class="row">
-                <div class="form-group col-sm-12">
-                    <button type="button" id="go" class="btn btn-default btn-block" disabled="disabled">
-                        Go
-                    </button>
-                </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-12">
+                <input type="text" id="request_url" name="gps_urlstring_add" value="" class="form-control" />
             </div>
+        </div>
+        
+        <div class="row">
+            <div class="form-group col-sm-12">
+                <button type="button" id="go" class="btn btn-default btn-block" disabled="disabled">
+                    Go
+                </button>
+            </div>
+        </div>
             
-        </form>
     </div>
 </div>
 

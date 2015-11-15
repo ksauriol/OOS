@@ -25,9 +25,12 @@ TIME_HAS_INVALID_CHARS The time contains invalid characters
 USER_NAME_EXISTS User name already exists. Please try another.
 ADD_ACCOUNT_FAILED Adding Account to Database Failed. 
 
-PROFILE_EXISTS
-PROFILE_TYPE_EMPTY
-PROFILE_TYPE_INVALID
+PROFILE_EXISTS Profile already exists.
+PROFILE_TYPE_EMPTY Profile type cannot be empty.
+PROFILE_TYPE_INVALID Profile type is invalid.
+PROFILE_EDIT_FAILED Failed to edit profile.
+PROFILE_GET_ALL_FAILED Failed to get all profiles.
+PROFILE_GET_FAILED Failed to get profile.
 LONGITUDE_EMPTY Longitude cannot be empty.
 LATITUDE_EMPTY Latitude cannot be empty.
 ALTITUDE_EMPTY Altitude cannot be empty.

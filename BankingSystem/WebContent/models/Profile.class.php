@@ -1,5 +1,5 @@
 <?php
-class Profile extends GenericModelObject {
+class Profile extends GenericModelObject implements JsonSerializable {
     
     private $arguments;
     private $profileID;
@@ -15,20 +15,9 @@ class Profile extends GenericModelObject {
     private $timeOfTemp;
     private $temp;
     private $password;
-   // private $profileType;
+    private $isLoggedIn;
     
     //private static $allowedProfileTypes = array('member', 'employee');
-    
-    const INDEX_FIRST_NAME = 0;
-    const INDEX_MIDDLE_NAME = 1;
-    const INDEX_LAST_NAME = 2;
-    const INDEX_EMAIL = 3;
-    const INDEX_PHONE = 4;
-    const INDEX_GENDER = 5;
-    const INDEX_DOB = 6;
-    const INDEX_ADDRESS = 7;
-    const INDEX_PROFILE_TYPE = 8;
-    const INDEX_PROFILE_ID = 9;
     
     const MAX_NAME = 50;
     const MAX_EMAIL = 50;
@@ -126,11 +115,15 @@ class Profile extends GenericModelObject {
         	"temp" => $this->temp,
         	"password" => $this->password,
         	"timeOfTemp" => $this->timeOfTemp,
-        		"SSN" => $this->SSN
-         //   "profileType" => $this->profileType
+    		"SSN" => $this->SSN,
+            "isLoggedIn" => $this->isLoggedIn
         );
         
         return $paramArray;
+    }
+    
+    public function isLoggedIn() {
+        return $this->isLoggedIn;
     }
     
     public function __toString() {
@@ -147,8 +140,8 @@ class Profile extends GenericModelObject {
             "temp: [" . $this->temp . "]\n".
             "timeOfTemp: [" . $this->timeOfTemp . "]\n".
             "password: [" . $this->password . "]\n".
-            "SSN : [" .		  $this->SSN 	 . "]\n";
-                      //  "Profile type: [" . $this->profileType . "]\n";
+            "SSN : [" .		  $this->SSN 	 . "]\n" .
+            "Is Logged In: [" . $this->isLoggedIn . "]";
         
         return $str;
     }
@@ -167,7 +160,7 @@ class Profile extends GenericModelObject {
             $this->gender = "";
             $this->address = "";
             $this->dob = "";
-           // $this->profileType = "";
+            $this->isLoggedIn = "";
         }
         else {
             $this->validateProfileID();
@@ -183,7 +176,7 @@ class Profile extends GenericModelObject {
             $this->validateTimeOfTemp();
             $this->validateTemp();
             $this->validatePassword();
-        //    $this->validateProfileType();
+            $this->validateIsLoggedIn();
         }
     }
     
@@ -208,7 +201,7 @@ class Profile extends GenericModelObject {
     }
     
     private function validateFirstName() {
-        $this->firstName = $this->extractForm($this->arguments, "firstName");//self::INDEX_FIRST_NAME);
+        $this->firstName = $this->extractForm($this->arguments, "firstName");
         if (empty($this->firstName)) {
             return;
         }
@@ -226,7 +219,7 @@ class Profile extends GenericModelObject {
     }
     
     private function validateMiddleName() {
-        $this->middleName = $this->extractForm($this->arguments, "middleName");//self::INDEX_MIDDLE_NAME);
+        $this->middleName = $this->extractForm($this->arguments, "middleName");
         if (empty($this->middleName)) {
             return;
         }
@@ -244,7 +237,7 @@ class Profile extends GenericModelObject {
     }
     
     private function validateLastName() {
-        $this->lastName = $this->extractForm($this->arguments, "lastName");//self::INDEX_LAST_NAME);
+        $this->lastName = $this->extractForm($this->arguments, "lastName");
         if (empty($this->lastName)) {
             return;
         }
@@ -262,7 +255,7 @@ class Profile extends GenericModelObject {
     }
     
     private function validateEmail() {
-        $this->email = $this->extractForm($this->arguments, "email");//self::INDEX_EMAIL);
+        $this->email = $this->extractForm($this->arguments, "email");
         if (empty($this->email)) {
             return;
         }
@@ -280,7 +273,7 @@ class Profile extends GenericModelObject {
     }
     
     private function validatePhone() {
-        $this->phone = $this->extractForm($this->arguments, "phone");//self::INDEX_PHONE);
+        $this->phone = $this->extractForm($this->arguments, "phone");
         if (empty($this->phone)) {
             return;
         }
@@ -298,7 +291,7 @@ class Profile extends GenericModelObject {
     }
     
     private function validateGender() {
-        $this->gender = $this->extractForm($this->arguments, "gender");//self::INDEX_GENDER);
+        $this->gender = $this->extractForm($this->arguments, "gender");
         if (empty($this->gender)) {
             return;
         }
@@ -311,7 +304,7 @@ class Profile extends GenericModelObject {
     }
     
     private function validateAddress() {
-        $this->address = $this->extractForm($this->arguments, "address");//self::INDEX_ADDRESS);
+        $this->address = $this->extractForm($this->arguments, "address");
     }
     
     private function validateDOB() {
@@ -326,18 +319,34 @@ class Profile extends GenericModelObject {
             return;
         }*/
     }
-    /*
-    private function validateProfileType() {
-        $this->profileType = $this->extractForm($this->arguments, "profileType");//self::INDEX_PROFILE_TYPE);
-     if (empty($this->profileType)) {
-            $this->setError("profileType", "PROFILE_TYPE_EMPTY");
-            return;
-        }
+    
+    private function validateIsLoggedIn() {
+        $this->isLoggedIn = $this->extractForm($this->arguments, "isLoggedIn");
+        if (empty($this->isLoggedIn) || $this->isLoggedIn == 0) {
+            $this->isLoggedIn = false;
+        } else
+            $this->isLoggedIn = true;
+    }
+    
+    // implement JsonSerializable interface - this determins what json_encode() returns with a Profile object as the argument
+    public function jsonSerialize() {
+        $object = new stdClass();
+        $object->profileID = $this->profileID;
+        $object->firstName = $this->firstName;
+        $object->middleName = $this->middleName;
+        $object->lastName = $this->lastName;
+        $object->email = $this->email;
+        $object->phone = $this->phone;
+        $object->gender = $this->gender;
+        $object->dob = $this->dob;
+        $object->address = $this->address;
+        $object->SSN = $this->SSN;
+        $object->timeOfTemp = $this->timeOfTemp;
+        $object->temp = $this->temp;
+        $object->password = $this->password;
+        $object->isLoggedIn = $this->isLoggedIn;
         
-        if (!in_array($this->profileType, self::$allowedProfileTypes)) {
-            $this->setError("profileType", "PROFILE_TYPE_INVALID");
-            return;
-        }
-    }*/
+        return $object;
+    }
 }
 ?>
