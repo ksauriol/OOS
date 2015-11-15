@@ -43,11 +43,6 @@ switch ($control) {
     case 'gps'     : GPSController::run($arguments); break;
     case 'view'    : ViewController::run($arguments); break;
     default: View::run(); break;
-      /*  $replyMsg = new ReplyMessage();
-        $replyMsg->status = 'failed';
-        $replyMsg->message = "$control is not recognized command";
-        $json = json_encode($replyMsg);
-        echo $json;*/
 }
 
 function sendMessage($status, $message) {

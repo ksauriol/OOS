@@ -12,10 +12,17 @@ class ViewController {
         
         switch ($action) {
             case 'gps': self::gps($arguments); break;
+            case 'login': self::login($arguments); break;
             default:
                 self::message("The first argument should be 'gps'. Argument '$action' invalid.");
                 return;
         }
+    }
+    
+    private static function login($arguments) {
+        $allData = array();
+        $allData['profiles'] = ProfilesDB::getAllProfiles();
+        LoginView::show($allData);
     }
     
     private static function gps($arguments) {
