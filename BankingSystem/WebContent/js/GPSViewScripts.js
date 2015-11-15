@@ -26,24 +26,6 @@ $(document).ready(function() {
 	checkGoButtonState();
 });
 
-function getallGPS_generate() {
-	if ($('#profiles_table .rowSelected').length == 0) {
-		$('#gps_getall').prop('disabled', true);
-		return;
-	}
-	
-	var urlstring = 'http://' + $('#base').val() + '/BankingSystem/gps/getall?';
-	var profileID = $('#profiles_table .rowSelected').attr('id').split('_')[1];
-	var email = $('#profile_email_' + profileID).text();
-	var password = $('#profile_password_' + profileID).text();
-	
-	urlstring = urlstring + 'email=' + email;
-	urlstring = urlstring + '&password=' + password;
-	
-	$('#request_url').val(urlstring).select();
-	checkGoButtonState();
-}
-
 function rowClicked_profile() {
 	var selected_row;
 	
@@ -57,26 +39,6 @@ function rowClicked_profile() {
 
 	// select clicked row
 	$(this).addClass('rowSelected');
-}
-
-function deleteGPS_generate(event) {
-	if ($('#gps_table .rowSelected').length == 0) {
-		$('#gps_delete').prop('disabled', true);
-		return;
-	}
-	
-	var urlstring = 'http://' + $('#base').val() + '/BankingSystem/gps/delete?';
-	var gpsID = $('#gps_table .rowSelected').attr('id').split('_')[1];
-	var profileID = $('#gps_profileID_' + gpsID).text();
-	var email = $('#profile_email_' + profileID).text();
-	var password = $('#profile_password_' + profileID).text();
-	
-	urlstring = urlstring + 'email=' + email;
-	urlstring = urlstring + '&password=' + password;
-	urlstring = urlstring + '&gpsID=' + gpsID;
-	
-	$('#request_url').val(urlstring).select();
-	checkGoButtonState();
 }
 
 // selects a row when clicked, and fills in the edit form
@@ -139,6 +101,9 @@ function editGPS_generate(event) {
 	urlstring = urlstring + '&altitude=' + $('#gps_altitude_edit').val();
 	urlstring = urlstring + '&dateAndTime=' + $('#gps_dateAndTime_edit').val();
 	
+	if ($('#debug_checkbox').prop('checked'))
+		urlstring = urlstring + '&debug=true';
+	
 	$('#request_url').val(urlstring).select();
 	checkGoButtonState();
 }
@@ -153,6 +118,53 @@ function addGPS_generate(event) {
 	urlstring = urlstring + '&longitude=' + $('#gps_longitude_add').val();
 	urlstring = urlstring + '&altitude=' + $('#gps_altitude_add').val();
 	urlstring = urlstring + '&dateAndTime=' + $('#gps_dateAndTime_add').val();
+	
+	if ($('#debug_checkbox').prop('checked'))
+		urlstring = urlstring + '&debug=true';
+	
+	$('#request_url').val(urlstring).select();
+	checkGoButtonState();
+}
+
+function deleteGPS_generate(event) {
+	if ($('#gps_table .rowSelected').length == 0) {
+		$('#gps_delete').prop('disabled', true);
+		return;
+	}
+	
+	var urlstring = 'http://' + $('#base').val() + '/BankingSystem/gps/delete?';
+	var gpsID = $('#gps_table .rowSelected').attr('id').split('_')[1];
+	var profileID = $('#gps_profileID_' + gpsID).text();
+	var email = $('#profile_email_' + profileID).text();
+	var password = $('#profile_password_' + profileID).text();
+	
+	urlstring = urlstring + 'email=' + email;
+	urlstring = urlstring + '&password=' + password;
+	urlstring = urlstring + '&gpsID=' + gpsID;
+	
+	if ($('#debug_checkbox').prop('checked'))
+		urlstring = urlstring + '&debug=true';
+	
+	$('#request_url').val(urlstring).select();
+	checkGoButtonState();
+}
+
+function getallGPS_generate() {
+	if ($('#profiles_table .rowSelected').length == 0) {
+		$('#gps_getall').prop('disabled', true);
+		return;
+	}
+	
+	var urlstring = 'http://' + $('#base').val() + '/BankingSystem/gps/getall?';
+	var profileID = $('#profiles_table .rowSelected').attr('id').split('_')[1];
+	var email = $('#profile_email_' + profileID).text();
+	var password = $('#profile_password_' + profileID).text();
+	
+	urlstring = urlstring + 'email=' + email;
+	urlstring = urlstring + '&password=' + password;
+	
+	if ($('#debug_checkbox').prop('checked'))
+		urlstring = urlstring + '&debug=true';
 	
 	$('#request_url').val(urlstring).select();
 	checkGoButtonState();

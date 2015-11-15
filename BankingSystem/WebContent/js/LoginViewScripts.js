@@ -36,6 +36,9 @@ function login_generate() {
 	urlstring = urlstring + 'email=' + email;
 	urlstring = urlstring + '&password=' + password;
 	
+	if ($('#debug_checkbox').prop('checked'))
+		urlstring = urlstring + '&debug=true';
+	
 	$('#request_url').val(urlstring).select();
 	checkGoButtonState();
 }
@@ -53,6 +56,9 @@ function logout_generate() {
 	var urlstring = 'http://' + $('#base').val() + '/BankingSystem/logout?';
 	urlstring = urlstring + 'email=' + email;
 	urlstring = urlstring + '&password=' + password;
+	
+	if ($('#debug_checkbox').prop('checked'))
+		urlstring = urlstring + '&debug=true';
 	
 	$('#request_url').val(urlstring).select();
 	checkGoButtonState();

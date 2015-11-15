@@ -177,7 +177,11 @@ class GPSController {
         $object->meta->description = $description;
         $object->data = $data; // specific to endpoints. may be null for some endpoints.
         $json = json_encode($object, JSON_PRETTY_PRINT);
-        echo '<pre>' . $json . '</pre>';
+        
+        if(isset($_GET['debug']))
+            echo '<pre>' . $json . '</pre>';
+        else
+            echo $json;
     }
     
 }

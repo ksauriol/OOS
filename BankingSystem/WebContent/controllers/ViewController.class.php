@@ -13,8 +13,9 @@ class ViewController {
         switch ($action) {
             case 'gps': self::gps($arguments); break;
             case 'login': self::login($arguments); break;
+            case 'all':
             default:
-                self::message("The first argument should be 'gps'. Argument '$action' invalid.");
+                ViewsView::show();
                 return;
         }
     }

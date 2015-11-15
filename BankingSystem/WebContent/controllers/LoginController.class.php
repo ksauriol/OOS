@@ -143,7 +143,11 @@ class LoginController {
         $replyMsg->meta->description = $description;
         $replyMsg->data = $data; // specific to endpoints. may be null for some endpoints.
         $json = json_encode($replyMsg, JSON_PRETTY_PRINT);
-        echo '<pre>' . $json . '</pre>';
+        
+        if(isset($_GET['debug']))
+            echo '<pre>' . $json . '</pre>';
+        else
+            echo $json;
     }
     
 }

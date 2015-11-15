@@ -17,7 +17,7 @@ class GPSView {
     <link rel="stylesheet" href="http://<?=$_GET['base']?>/BankingSystem/css/bootstrap.min.css" type="text/css" />
     <script src="http://<?=$_GET['base']?>/BankingSystem/js/jquery-1.11.3.js"></script>
     <script src="http://<?=$_GET['base']?>/BankingSystem/js/bootstrap.min.js"></script>
-    <script src="http://<?=$_GET['base']?>/BankingSystem/js/ViewScripts.js"></script>
+    <script src="http://<?=$_GET['base']?>/BankingSystem/js/GPSViewScripts.js"></script>
     <title>BankingSystem | GPS View</title>
     <style>
         caption {
@@ -61,6 +61,13 @@ class GPSView {
             and password, make sure the profile you are trying to add data for has a password assigned to it.
             Don't forget to refresh this page after making requests to see the updated tables.
             If you find a bug, please let me know.
+        </p>
+        <p class="alert alert-info">
+            Responses to requests are shown after you click Go. These responses will be ugly by default. If you want
+            to see readable output, check the Pretty Print box before you click any Generate String button. This adds
+            a &quot;debug&quot; argument to the string. This is implemented as a toggle because the pretty print
+            version adds <code>&lt;pre&gt;</code> and <code>&lt;/pre&gt;</code> around the output, which would mess up
+            the processing of the response message in the client code.
         </p>
         <table id="profiles_table" class="table table-striped table-hover table-condensed table-responsive">
             <caption>Profiles</caption>
@@ -166,7 +173,11 @@ class GPSView {
             <div class="col-xs-4 col-sm-3">
                 <label id="request_url_label" for="request_url">Request URL</label>
             </div>
-            <div class="col-xs-3 col-xs-offset-5 col-sm-1 col-sm-offset-8">
+            <div class="col-xs-5 col-xs-offset-3 col-sm-3 col-sm-offset-6">
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="debug_checkbox" />
+                    Pretty Print
+                </label>
                 <button type="button" id="request_url_clear" class="btn btn-default">Clear</button>
             </div>
         </div>
