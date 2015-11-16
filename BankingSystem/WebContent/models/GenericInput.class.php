@@ -10,10 +10,10 @@ class GenericInput {
 		//print_r($token[0].'<br>');
 	    $temps =  preg_split("/\&/", $parts[1], null);
 	   // print_r($hardCode[$count].'***'.$hardCode[1].'<br>');
-		foreach ($temps as $temp){ 
+		foreach ($temps as $temp){
 			$value =  preg_split("/\=/", $temp, null, PREG_SPLIT_NO_EMPTY);
-			//print_r($hardcode[$count].'---'.$value[0].'***'.$value[1].'<br>');
-			if (strcmp($hardCode[$count],$value[0])==0)//Makes sure the non parsed fields are correct
+			print_r($hardcode[$count].'---'.$value[0].'***'.$value[1].'<br>');
+			if (strcasecmp($hardCode[$count],$value[0])==0)//Makes sure the non parsed fields are correct
 				$token[$count+1] = htmlspecialchars($value[1]);
 			$count++;
 		}

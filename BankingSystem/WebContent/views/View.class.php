@@ -3,7 +3,11 @@ class View{
 	public static function run() {
 		$profiles = ProfilesDB::getAllProfiles();
 		$accounts = AccountsDB::getAllAccounts();
+		$accountInfo = AccountInfoDB::getAllAccounts();
 		echo "<!DOCTYPE html><html><head>";
+		/*foreach($_SESSION as $key=>$var){
+			print_r("<br>".$key.": ".$var."<br>");
+		}*/
 		echo "<h1>BankSystem profile list</h1>";
 		echo "<table>";
 		echo "<thead>";
@@ -33,20 +37,48 @@ class View{
 				}
 			}
 		}
+		
 		echo "</tbody>";
 		echo "</table>";
 		echo "<br><br>";
-		echo "<h1>BankSystem Account list</h1>";
+		echo "<h1>BankSystem Account Info</h1>";
 		echo "<table>";
 		echo "<thead>";
-		echo "<tr><td></td><th>Account Id</th><td></td><th>Profile ID</th><th>SSN</th></tr>";
+		echo "<tr><td></td><th>Account Id</th><td></td><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Address</th>";
+		echo "<th>Phone</th><th>SSN</th></tr>";
+		echo "</thead>";
+		echo "<tbody>";
+		foreach ($accountInfo as $acc){
+			echo '<tr><td></td>';
+			echo '<td>'.$acc->getAccountID().'</td><td></td>';
+			echo '<td>'.$acc->getFirstName().'</td>';
+			echo '<td>'.$acc->getMiddleName().'</td>';
+			echo '<td>'.$acc->getLastName().'</td>';
+			echo '<td>'.$acc->getAddress().'</td>';
+			echo '<td>'.$acc->getTel().'</td>';
+			echo '<td>'.$acc->getSSN().'</td>';
+			echo '</tr>';
+		}
+		echo "</tbody>";
+		echo "</table>";
+		echo "</body></html>";
+		
+		
+		echo "</tbody>";
+		echo "</table>";
+		echo "<br><br>";
+		echo "<h1>BankSystem Account Ownership</h1>";
+		echo "<table>";
+		echo "<thead>";
+		echo "<tr><td></td><th>Entry</th><th>Account Id</th><td></td><th>Profile ID</th><th>SSN</th></tr>";
 		echo "</thead>";
 		echo "<tbody>";
 		foreach ($accounts as $acc){
 			echo '<tr><td></td>';
-			echo '<td>'.$acc->getAccountID().'</td><td></td>';
+			echo '<td>'.$acc->getEntry().'</td><td></td>';
+			echo '<td>'.$acc->getAccountID().'</td>';
 			echo '<td>'.$acc->getProfileID().'</td>';
-			echo '<td>   '.$acc->getSSN().'</td>';
+			echo '<td>'.$acc->getSSN().'</td>';
 			echo '</tr>';
 		}
 		echo "</tbody>";

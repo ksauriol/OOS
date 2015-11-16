@@ -24,7 +24,9 @@ TIME_EMPTY The time cannot be empty or contain only white space
 TIME_HAS_INVALID_CHARS The time contains invalid characters
 USER_NAME_EXISTS User name already exists. Please try another.
 ADD_ACCOUNT_FAILED Adding Account to Database Failed. 
-
+ADD_ACCOUNT_INFO_FAILED Adding Account to Database Failed. 
+ACCOUNT_INFO_COULD_NOT_BE_UPDATED Acount Info Edit Failed.
+ACCOUNT_COULD_NOT_BE_UPDATED Acount Edit Failed.
 PROFILE_EXISTS
 PROFILE_TYPE_EMPTY
 PROFILE_TYPE_INVALID

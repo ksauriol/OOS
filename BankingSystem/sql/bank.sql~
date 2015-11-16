@@ -1,6 +1,6 @@
-drop database if exists cs4773;
-create database cs4773;
-use cs4773;
+drop database if exists bank;
+create database bank;
+use bank;
 
 create table Profiles(
     profileID       integer primary key auto_increment,
@@ -12,41 +12,19 @@ create table Profiles(
     gender          varchar(6),
     address         varchar(100),
     dob             date,
-    temp			varchar(50),
-    timeOfTemp		int,
-    password		varchar(50),
-    SSN             int (11) NOT NULL unique
+    profileType     enum('member', 'employee'),
+    constraint un_member2 unique (firstName, middleName, lastName, email)
 );
 
-create table AccountInfo(
-    accountID		integer primary key,
-    firstName       varchar(50),
-    middleName      varchar(50),
-    lastName        varchar(50),
-    address         varchar(100),
-   	tel             int(11),
-    SSN             int (11) NOT NULL
+create table OnlineAccount(
+    onlineID        integer primary key auto_increment,
+    userName        varchar(50) unique not null,
+    email           varchar(50) unique not null,
+    password        varchar(255) not null,
+    profileID        integer unique not null,
+    foreign key (profileID) references Profiles (profileID) on delete cascade
 );
 
-create table Accounts(
-	entry			 integer primary key auto_increment,
-    accountID        integer,
-    profileID        integer,
-    SSN              integer,
-    foreign key (profileID) references Profiles (profileID),
-    foreign key (accountID) references AccountInfo (accountID) 
-);
-
-insert into Profiles(firstName, email)
-	VALUES("firstGuy", "first@email.com")
-insert into Profiles(firstName, email)
-	VALUES("secondGuy", "second@email.com")
-
-insert into Accounts(profileID)
-	values (7)
-insert into Accounts(profileID)
-	values (null)
-	
 insert into Profiles (firstName, middleName, lastName, email, phone, gender, address, dob, profileType)
     values ('Bob', null, 'Roberts', 'bob@email.com', '210-555-2364', 'male', '214 De Zevala, San Antonio, TX 78249', '1987-02-14', 'member');
 insert into Profiles (firstName, middleName, lastName, email, phone, gender, address, dob, profileType)

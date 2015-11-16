@@ -23,6 +23,7 @@ explode('/', $url, 5) + array("", "", "", "", null);
 $part = preg_split("/\/BankingSystem\//", $url, null, PREG_SPLIT_NO_EMPTY);
 $urlPieces = preg_split("/\//", $part[1], null, PREG_SPLIT_NO_EMPTY);
 $base = $part[0];
+$_GET['base'] = $base;
 $numPieces = count($urlPieces);
 //print_r($numPieces.'<br>');
 if ($numPieces > 0) 

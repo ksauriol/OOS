@@ -87,18 +87,19 @@ class AccountsDB {
 			$db = Database::getDB ();
 			if (is_null($account) || $account->getErrorCount() > 0)
 				return $account;
-			$checkAccount = AccountsDB::getAccountsBy('accountID', $account->getAccountID());
+			$checkAccount = AccountsDB::getAccountsBy('entry', $account->getEntry());
 			if (empty($checkAccount))
 				$account->setError('accountId', 'ACCOUNT_DOES_NOT_EXIST');
 			if ($account->getErrorCount() > 0)
 				return $account;
 			//print_r($account->getAccountID().'<br>'.$account->getProfileID().'<br>');
-			$query = "UPDATE Accounts SET profileID = :profileID
-	    			                 WHERE accountID = :accountID";
+			$query = "UPDATE Accounts SET profileID = :profileID, SSN = :SSN, accountID = :accountID
+	    			                 WHERE entry = :entry";
 	
 			$statement = $db->prepare ($query);
 			$statement->bindValue(":profileID", $account->getProfileID());
 			$statement->bindValue(":accountID", $account->getAccountID());
+			$statement->bindValue(":SSN", $account->getSSN());
 			$statement->execute ();
 			$statement->closeCursor();
 		} catch (Exception $e) { // Not permanent error handling

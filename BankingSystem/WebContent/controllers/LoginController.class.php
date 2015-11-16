@@ -103,7 +103,7 @@ class LoginController {
         
         // user successfully logged in. record that the user has been authenticated, and return success message
         $_SESSION['authenticated'] = true; // want to know if someone is logged in, in the future? check that (isset($_SESSION) && $_SESSION['authenticated']) evaluates to true
-        print_r("SUCCESS. Logged in as: ".$profile->getFirstName().'<br>');
+      //  print_r("SUCCESS. Logged in as: ".$profile->getFirstName().'<br>');
         self::outputMessage(self::CODE_SUCCESS, self::CAUSE_LOGGED_IN, 'Log in successful');
     }
     
@@ -139,6 +139,7 @@ class LoginController {
         $replyMsg->meta->description = $description;
         $replyMsg->data = $data; // specific to endpoints. may be null for some endpoints.
         $json = json_encode($replyMsg);
+        echo $json;
     }
     
    /* old function

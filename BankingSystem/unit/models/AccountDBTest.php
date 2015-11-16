@@ -52,7 +52,7 @@ class AccountDBTest extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function testGetAccountByWithValidParameters() {
-		$account = AccountsDB::getAccountsBy('accountID', 22);
+		$account = AccountsDB::getAccountsBy('accountID', 1);
 		
 		$this->assertInstanceOf('Account', $account[0],
 				'It should return a Account object when valid parameters are provided');

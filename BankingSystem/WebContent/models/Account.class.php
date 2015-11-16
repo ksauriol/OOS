@@ -4,6 +4,7 @@ class Account extends GenericModelObject {
 	private $accountID;
 	private $profileID;
 	private $SSN;
+	private $entry;
 	
 
 	
@@ -15,6 +16,10 @@ class Account extends GenericModelObject {
 	
 	public function getSSN() {
 		return $this->SSN;
+	}
+	
+	public function getEntry() {
+		return $this->entry;
 	}
 	
 	public function getProfileID() {
@@ -34,7 +39,8 @@ class Account extends GenericModelObject {
 		$paramArray = array(
 				"profileID" => $this->profileID,
 				"accountID" => $this->accountID,
-				"SSN"		=> $this->SSN
+				"SSN"		=> $this->SSN,
+				"entry"		=> $this->entry
 				);
 				return $paramArray;
 	}
@@ -43,7 +49,8 @@ class Account extends GenericModelObject {
 		$str =
 		"Account ID: [" . $this->accountID . "]\n" .
 		"Profile ID: [" . $this->profileID . "]\n" .
-		"SSN : [" .		  $this->SSN 	   . "]\n";
+		"SSN : [" .		  $this->SSN 	   . "]\n".
+		"Entry : [" .      $this->entry 	   . "]\n";
 		return $str;
 	}
 		
@@ -59,11 +66,16 @@ class Account extends GenericModelObject {
 				$this->validateProfileID();
 				$this->validateAccountID();
 				$this->validateSSN();
+				$this->validateEntry();
 		}
 	}
 	
 	private function validateSSN() {
 		$this->SSN = $this->extractForm($this->arguments, "SSN");
+	}
+	
+	private function validateEntry() {
+		$this->entry = $this->extractForm($this->arguments, "entry");
 	}
 	
 	private function validateAccountID() {
