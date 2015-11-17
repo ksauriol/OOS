@@ -3,6 +3,13 @@ class ProfileController {
     
     private static $jsonReply = '';
     const NUM_PROFILE_ARGS = 10; // number of arguments needed to create a profile
+    const CODE_SUCCESS = 200;
+    const CODE_BAD_REQUEST = 400;
+    const CODE_UNAUTHORIZED = 401;
+    const CODE_NOT_FOUND = 404;
+    const CODE_INTERNAL_SERVER_ERROR = 500;
+    const CAUSE_TIME_OUT= 'Password timed out';
+    const CAUSE_INVALID_ACTION = 'Action argument invalid';
     
     public static function run($arguments = null) {
     
@@ -34,7 +41,8 @@ class ProfileController {
     			if (strcmp($ProfileDB->getPassword(),$parts[1])==0){
     				$ProfileDB->setPassword($parts[2]);
     				ProfilesDB::editProfile($ProfileDB);
-    			} else print_r("Incorrect Password/email");
+    				self::outputMessage(self::CODE_SUCCESS,'Password Set','Password is Set');
+    			} else self::outputMessage(self::CODE_BAD_REQUEST, 'Incorrect email/password', 'Passwrod or Email was incorrect. ');
     		} else if ($ProfileDB->getTimeOfTemp() > time()){
     			//print_r(time().'***'.$ProfileDB->getTimeOfTemp());
     			if (strcmp($ProfileDB->getTemp(),$parts[1])==0){
@@ -43,14 +51,15 @@ class ProfileController {
     				$ProfileDB->setTimeOfTemp(0);
     				//print_r($ProfileDB->__toString());
     				ProfilesDB::editProfile($ProfileDB);
-    			}else print_r("Incorrect Password/email");
+    				self::outputMessage(self::CODE_SUCCESS,'Password Set','Password is Set');
+    			}else self::outputMessage(self::CODE_BAD_REQUEST, 'Incorrect email/password', 'Passwrod or Email was Incorrect. ');
     		} else {
     		//	print_r(time().'***'.$ProfileDB->getTimeOfTemp());
     			AccountsDB::deleteAccountsBy('profileID',$ProfileDB->getProfileID());
     			ProfilesDB::deleteProfileBy('email',$parts[0]);
-    			print_r("Account Exceeded Temporary Password time. Please Create the Account again.");
+    			self::outputMessage(self::CAUSE_TIME_OUT,'Password timed out',"Account Exceeded Temporary Password Time. Please Create the Account again.");
     		}
-    	} else print_r("Account not found");
+    	} else self::outputMessage(self::CAUSE_INVALID_ACTION,'Account not found','Invalid Account, Account Not Found');
     	
     	
     }
