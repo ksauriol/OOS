@@ -6,7 +6,7 @@
  * @version 1.0 
  */
 
-class EmailTest {
+class Email {
 	
 	/**
 	 * Calls mail function, which might be using smtp instead of postfix
