@@ -9,9 +9,9 @@ class ProfilesDB {
             $db = Database::getDB();
             $stmt = $db->prepare(
                 "insert into Profiles (firstName, middleName, lastName,
-                    email, phone, gender, address, dob, SSN, temp, timeOFTemp, password)
+                    email, phone, gender, dob, password, accountID)
                 values (:firstName, :middleName, :lastName, :email, :phone,
-                    :gender, :address, :dob, :SSN, :temp, :timeOfTemp, :password)"
+                    :gender, :dob, :password, :accountID)"
             );
             $stmt->execute(array(
                 ":firstName" => $profile->getFirstName(),
@@ -20,19 +20,20 @@ class ProfilesDB {
                 ":email" => $profile->getEmail(),
                 ":phone" => $profile->getPhoneNumber(),
                 ":gender" => $profile->getGender(),
-                ":address" => $profile->getAddress(),
                 ":dob" => $profile->getDOB(),
             	":password" => $profile->getPassword(),
             	":temp"		=>$profile->getTemp(),
             	":timeOfTemp" =>$profile->getTimeOfTemp(),
-            	":SSN" => $profile->getSSN()
+                ":accountID" =>$profile->getAccountID()
             ));
             $returnProfileID = $db->lastInsertId("profileID");
             
         } catch (PDOException $e) {
             $profile->setError("profilesDB", "ADD_PROFILE_FAILED");
+            return $e->getMessage();
         } catch (RuntimeException $e) {
             $profile->setError("database", "DB_CONFIG_NOT_FOUND");
+            return $e->getMessage();
         }
         
         return $returnProfileID;
@@ -109,7 +110,7 @@ class ProfilesDB {
     
     // returns a Profile object whose $type field has value $value
     public static function getProfileBy($type, $value) {
-        $allowed = ['profileID', 'email','SSN'];
+        $allowed = ['profileID', 'email'];
         $profile = null;
         
         try {

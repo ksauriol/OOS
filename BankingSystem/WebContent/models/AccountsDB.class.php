@@ -108,7 +108,7 @@ class AccountsDB {
      }
      
     public static function getAccountsBy($type, $value) {
-    	$allowed = ['profileID', 'accountID','SSN'];
+    	$allowed = ['profileID', 'bankID','SSN'];
     	$allAccounts = array();
     
     	try {
@@ -117,7 +117,7 @@ class AccountsDB {
     
     		$db = Database::getDB();
     		$stmt = $db->prepare(
-    				"select profileID, accountID, SSN
+    				"select bankID, firstName, lastName, SSN, address, balance
     				from Accounts
     				where ($type = :$type)");
     		$stmt->execute(array(":$type" => $value));

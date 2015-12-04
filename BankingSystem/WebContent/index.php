@@ -36,7 +36,8 @@ if ($numPieces > 1)
 
 // run the requested controller
 switch ($control) {
-    case 'account' : ProfileController::run($arguments); break;
+//     case 'account' : SignupController::run(array_slice($arguments, 1)); break;
+    case 'account' : SignupController::run($arguments); break;
     case 'bank'    : BankController::run($arguments); break;
     case 'login'   : LoginController::run(array_merge(array($control), $arguments)); break;
     case 'logout'  : LoginController::run(array_merge(array($control), $arguments)); break;

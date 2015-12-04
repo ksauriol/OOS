@@ -3,9 +3,6 @@ class Profile extends GenericModelObject implements JsonSerializable {
     
     private $arguments;
     private $profileID;
-    private $firstName;
-    private $middleName;
-    private $lastName;
     private $email;
     private $phone;
     private $gender;
@@ -16,6 +13,9 @@ class Profile extends GenericModelObject implements JsonSerializable {
     private $temp;
     private $password;
     private $isLoggedIn;
+    private $accountID;
+    private $dateCreated;
+    private $isEmployee;
     
     //private static $allowedProfileTypes = array('member', 'employee');
     
@@ -52,8 +52,9 @@ class Profile extends GenericModelObject implements JsonSerializable {
 		$this->validatePassword();
     }
     
-    public function getSSN() {
-    	return $this->SSN;
+    public function setProfileID($input) {
+        $this->arguments['profileID'] = $input;
+        $this->validateProfileID();
     }
     
     public function getTimeOfTemp() {
@@ -62,18 +63,6 @@ class Profile extends GenericModelObject implements JsonSerializable {
     
     public function getProfileID() {
         return $this->profileID;
-    }
-    
-    public function getFirstName() {
-        return $this->firstName;
-    }
-    
-    public function getMiddleName() {
-        return $this->middleName;
-    }
-    
-    public function getLastName() {
-        return $this->lastName;
     }
 
     public function getEmail() {
@@ -95,28 +84,28 @@ class Profile extends GenericModelObject implements JsonSerializable {
     public function getAddress() {
         return $this->address;
     }
-    /*
-    public function getProfileType() {
-        return $this->profileType;
-    }*/
+    
+    public function getAccountID() {
+        return $this->accountID;
+    }
+    
+    public function getDateCreated() {
+        return $this->dateCreated;
+    }
     
     // Returns data fields as an associative array
     public function getParameters() {
         $paramArray = array(
             "profileID" => $this->profileID,
-            "firstName" => $this->firstName,
-            "middleName" => $this->middleName,
-            "lastName" => $this->lastName,
             "email" => $this->email,
             "phone" => $this->phone,
             "gender" => $this->gender,
             "address" => $this->address,
             "dob" => $this->dob,
-        	"temp" => $this->temp,
         	"password" => $this->password,
-        	"timeOfTemp" => $this->timeOfTemp,
-    		"SSN" => $this->SSN,
-            "isLoggedIn" => $this->isLoggedIn
+            "isLoggedIn" => $this->isLoggedIn,
+            "acccountID" => $this->accountID,
+            "dateCreated" => $this->dateCreated
         );
         
         return $paramArray;
@@ -126,22 +115,22 @@ class Profile extends GenericModelObject implements JsonSerializable {
         return $this->isLoggedIn;
     }
     
+    public function isEmployee() {
+        return $this->isEmployee;
+    }
+    
     public function __toString() {
         $str =
             "Profile ID: [" . $this->profileID . "]\n" .
-            "First name: [" . $this->firstName . "]\n" .
-            "Middle name: [" . $this->middleName . "]\n" .
-            "Last name: [" . $this->lastName . "]\n" .
             "E-mail address: [" . $this->email . "]\n" .
             "Phone number: [" . $this->phone . "]\n" .
             "Gender: [" . $this->gender . "]\n" .
             "Address: [" . $this->address . "]\n" .
             "Date of birth: [" . $this->dob . "]\n".
-            "temp: [" . $this->temp . "]\n".
-            "timeOfTemp: [" . $this->timeOfTemp . "]\n".
             "password: [" . $this->password . "]\n".
-            "SSN : [" .		  $this->SSN 	 . "]\n" .
-            "Is Logged In: [" . $this->isLoggedIn . "]";
+            "Is Logged In: [" . $this->isLoggedIn . "]\n" .
+            "Account ID: [" . $this->accountID . "]\n" .
+            "Date Created: [" . $this->dateCreated . "]";
         
         return $str;
     }
@@ -152,21 +141,17 @@ class Profile extends GenericModelObject implements JsonSerializable {
         
         if (is_null($this->arguments)) {
             $this->profileID = "";
-            $this->firstName = "";
-            $this->middleName = "";
-            $this->lastName = "";
             $this->email = "";
             $this->phone = "";
             $this->gender = "";
             $this->address = "";
             $this->dob = "";
             $this->isLoggedIn = "";
+            $this->accountID = "";
+            $this->dateCreated = "";
         }
         else {
             $this->validateProfileID();
-            $this->validateFirstName();
-            $this->validateMiddleName();
-            $this->validateLastName();
             $this->validateEmail();
             $this->validatePhone();
             $this->validateGender();
@@ -177,6 +162,8 @@ class Profile extends GenericModelObject implements JsonSerializable {
             $this->validateTemp();
             $this->validatePassword();
             $this->validateIsLoggedIn();
+            $this->validateAccountID();
+            $this->validateDateCreated();
         }
     }
     
@@ -198,60 +185,6 @@ class Profile extends GenericModelObject implements JsonSerializable {
     
     private function validateProfileID() {
         $this->profileID = $this->extractForm($this->arguments, "profileID");
-    }
-    
-    private function validateFirstName() {
-        $this->firstName = $this->extractForm($this->arguments, "firstName");
-        if (empty($this->firstName)) {
-            return;
-        }
-        
-        if (strlen($this->firstName) > self::MAX_NAME) {
-            $this->setError("firstName", "FIRST_NAME_TOO_LONG");
-            return;
-        }
-        
-        $options = array("options" => array("regexp" => "/[a-zA-Z ]/"));
-        if (!filter_var($this->firstName, FILTER_VALIDATE_REGEXP, $options)) {
-            $this->setError("firstName", "FIRST_NAME_HAS_INVALID_CHARS");
-            return;
-        }
-    }
-    
-    private function validateMiddleName() {
-        $this->middleName = $this->extractForm($this->arguments, "middleName");
-        if (empty($this->middleName)) {
-            return;
-        }
-    
-        if (strlen($this->middleName) > self::MAX_NAME) {
-            $this->setError("middleName", "MIDDLE_NAME_TOO_LONG");
-            return;
-        }
-    
-        $options = array("options" => array("regexp" => "/[a-zA-Z ]/"));
-        if (!filter_var($this->middleName, FILTER_VALIDATE_REGEXP, $options)) {
-            $this->setError("middleName", "MIDDLE_NAME_HAS_INVALID_CHARS");
-            return;
-        }
-    }
-    
-    private function validateLastName() {
-        $this->lastName = $this->extractForm($this->arguments, "lastName");
-        if (empty($this->lastName)) {
-            return;
-        }
-        
-        if (strlen($this->lastName) > self::MAX_NAME) {
-            $this->setError("lastName", "LAST_NAME_TOO_LONG");
-            return;
-        }
-        
-        $options = array("options" => array("regexp" => "/[a-zA-Z ]/"));
-        if (!filter_var($this->lastName, FILTER_VALIDATE_REGEXP, $options)) {
-            $this->setError("lastName", "LAST_NAME_HAS_INVALID_CHARS");
-            return;
-        }
     }
     
     private function validateEmail() {
@@ -320,6 +253,14 @@ class Profile extends GenericModelObject implements JsonSerializable {
         }*/
     }
     
+    private function validateAccountID() {
+        $this->accountID = $this->extractForm($this->arguments, "bankID");
+        if (empty($this->accountID)) {
+            $this->setError('bankID', 'BANK_ID_EMPTY');
+            return;
+        }
+    }
+    
     private function validateIsLoggedIn() {
         $this->isLoggedIn = $this->extractForm($this->arguments, "isLoggedIn");
         if (empty($this->isLoggedIn) || $this->isLoggedIn == 0) {
@@ -328,21 +269,19 @@ class Profile extends GenericModelObject implements JsonSerializable {
             $this->isLoggedIn = true;
     }
     
+    private function validateDateCreated() {
+        $this->dateCreated = $this->extractForm($this->arguments, "dateCreated");
+    }
+    
     // implement JsonSerializable interface - this determins what json_encode() returns with a Profile object as the argument
     public function jsonSerialize() {
         $object = new stdClass();
         $object->profileID = $this->profileID;
-        $object->firstName = $this->firstName;
-        $object->middleName = $this->middleName;
-        $object->lastName = $this->lastName;
         $object->email = $this->email;
         $object->phone = $this->phone;
         $object->gender = $this->gender;
         $object->dob = $this->dob;
         $object->address = $this->address;
-        $object->SSN = $this->SSN;
-        $object->timeOfTemp = $this->timeOfTemp;
-        $object->temp = $this->temp;
         $object->password = $this->password;
         $object->isLoggedIn = $this->isLoggedIn;
         

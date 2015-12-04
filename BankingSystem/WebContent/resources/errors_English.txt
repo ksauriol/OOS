@@ -42,4 +42,5 @@ GPS_ADD_FAILED Failed to add GPS.
 GPS_EDIT_FAILED Failed to edit GPS.
 GPS_GET_ALL_FAILED Failed to retreive all GPS data.
 GPS_GET_FAILED Failed to retreive the requested GPS data.
-GPS_DELETE_FAILED Failed to delete the specified GPS data. 
+GPS_DELETE_FAILED Failed to delete the specified GPS data.
+BANK_ID_EMPTY Bank ID cannot be empty.
