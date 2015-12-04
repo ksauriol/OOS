@@ -36,10 +36,10 @@ create table Profiles(
 );
 
 create table Accounts_Owners(
-    accountID        integer,
+    bankID        integer,
     profileID        integer,
-    primary key (accountID, profileID)
-    foreign key (accountID) references Accounts (accountID),
+    primary key (bankID, profileID),
+    foreign key (bankID) references Accounts (bankID),
     foreign key (profileID) references Profiles (profileID)
 );
 
