@@ -30,7 +30,7 @@ create table Profiles(
     isLoggedIn      boolean default false,
     accountID       integer not null unique,
     isEmployee      boolean default false,
-    dateCreated     datetime default CURRENT_TIMESTAMP,
+    dateCreated     timestamp default CURRENT_TIMESTAMP,
     passwordChanged boolean default false,
     foreign key (accountID) references Accounts (bankID)
 );
