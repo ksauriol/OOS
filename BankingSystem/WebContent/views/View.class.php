@@ -22,7 +22,13 @@ class View{
 			echo '</tr>';
 			$personalAccounts = AccountsDB::getAccountsBy('bankID', $profile->getAccountID()); 
 			if (!empty($personalAccounts)){
-				echo "<tr><td></td><td></td><td></td><td></td><th>Account Id</th><th>Profile ID</th><th>SSN</th><th>First Name</th><th>Last Name</th><th>Balance</th></tr>";
+				echo "<tr><td></td><td></td><td></td><td></td>
+				        <th>Account Id</th>
+				        <th>SSN</th>
+				        <th>First Name</th>
+				        <th>Last Name</th>
+				        <th>Balance</th>
+				      </tr>";
 				foreach ($personalAccounts as $acc){
 					if (!is_null($acc)){
 					//	print_r('<br>'.$acc);
