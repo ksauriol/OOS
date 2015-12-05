@@ -83,7 +83,7 @@ class Profile extends GenericModelObject implements JsonSerializable {
     }
     
     public function getIsLoggedIn() {
-    	return $this->isLoogedIn;
+    	return $this->isLoggedIn;
     }
     
     public function getIsEmployee() {
@@ -121,8 +121,16 @@ class Profile extends GenericModelObject implements JsonSerializable {
         return $this->isLoggedIn;
     }
     
+    public function setLoggedIn($boolean) {
+        $this->isLoggedIn = $boolean;
+    }
+    
     public function isEmployee() {
         return $this->isEmployee;
+    }
+    
+    public function setEmployee($boolean) {
+        $this->isEmployee = $boolean;
     }
     
     public function isPasswordChanged() {
@@ -141,6 +149,7 @@ class Profile extends GenericModelObject implements JsonSerializable {
             "Is Logged In: [" . $this->isLoggedIn . "]\n" .
             "Account ID: [" . $this->accountID . "]\n" .
             "Date Created: [" . $this->dateCreated . "]" .
+            "Is Employee: [" . $this->isEmployee . "]" .
             "passwordChanged: [" . $this->passwordChanged . "]";
         
         return $str;
@@ -157,9 +166,10 @@ class Profile extends GenericModelObject implements JsonSerializable {
             $this->gender = "";
             $this->address = "";
             $this->dob = "";
-            $this->isLoggedIn = "";
+            $this->isLoggedIn = false;
             $this->accountID = "";
             $this->dateCreated = "";
+            $this->isEmployee = false;
             $this->passwordChanged=false;
         }
         else {
@@ -174,6 +184,7 @@ class Profile extends GenericModelObject implements JsonSerializable {
             $this->validateIsLoggedIn();
             $this->validateAccountID();
             $this->validateDateCreated();
+            $this->validateIsEmployee();
             $this->validatePasswordChanged();
         }
     }
@@ -283,6 +294,14 @@ class Profile extends GenericModelObject implements JsonSerializable {
             $this->isLoggedIn = true;
     }
     
+    private function validateIsEmployee() {
+        $this->isEmployee = $this->extractForm($this->arguments, "isEmployee");
+        if (empty($this->isEmployee) || $this->isEmployee == 0) {
+            $this->isEmployee = false;
+        } else
+            $this->isEmployee = true;
+    }
+    
     private function validateDateCreated() {
         $this->dateCreated = $this->extractForm($this->arguments, "dateCreated");
     }
@@ -298,6 +317,8 @@ class Profile extends GenericModelObject implements JsonSerializable {
         $object->address = $this->address;
         $object->password = $this->password;
         $object->isLoggedIn = $this->isLoggedIn;
+        $object->isEmployee = $this->isEmployee;
+        $object->passwordChanged = $this->passwordChanged;
         
         return $object;
     }
