@@ -256,8 +256,11 @@ class Profile extends GenericModelObject implements JsonSerializable {
     private function validateAccountID() {
         $this->accountID = $this->extractForm($this->arguments, "bankID");
         if (empty($this->accountID)) {
-            $this->setError('bankID', 'BANK_ID_EMPTY');
-            return;
+            $this->accountID = $this->extractForm($this->arguments, "accountID");
+            if (empty($this->accountID)) {
+                $this->setError('bankID', 'BANK_ID_EMPTY');
+                return;
+            }
         }
     }
     
