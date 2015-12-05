@@ -8,22 +8,15 @@ class ProfilesDB {
         try {
             $db = Database::getDB();
             $stmt = $db->prepare(
-                "insert into Profiles (firstName, middleName, lastName,
-                    email, phone, gender, dob, password, accountID)
-                values (:firstName, :middleName, :lastName, :email, :phone,
-                    :gender, :dob, :password, :accountID)"
+                "insert into Profiles (email, phone, gender, dob, password, accountID)
+                values (:email, :phone, :gender, :dob, :password, :accountID)"
             );
             $stmt->execute(array(
-                ":firstName" => $profile->getFirstName(),
-                ":middleName" => $profile->getMiddleName(),
-                ":lastName" => $profile->getLastName(),
                 ":email" => $profile->getEmail(),
                 ":phone" => $profile->getPhoneNumber(),
                 ":gender" => $profile->getGender(),
                 ":dob" => $profile->getDOB(),
             	":password" => $profile->getPassword(),
-            	":temp"		=>$profile->getTemp(),
-            	":timeOfTemp" =>$profile->getTimeOfTemp(),
                 ":accountID" =>$profile->getAccountID()
             ));
             $returnProfileID = $db->lastInsertId("profileID");
