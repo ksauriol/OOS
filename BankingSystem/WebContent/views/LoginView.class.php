@@ -94,38 +94,28 @@ class LoginView {
             <thead>
                 <tr>
                     <th>profileID</th>
-                    <th>firstName</th>
-                    <th>middleName</th>
-                    <th>lastName</th>
                     <th>email</th>
                     <th>phone</th>
                     <th>gender</th>
-                    <th>address</th>
                     <th>dob</th>
-                    <th>temp</th>
-                    <th>timeOfTemp</th>
                     <th>password</th>
-                    <th>SSN</th>
                     <th>isLoggedIn</th>
+                    <th>isEmployee</th>
+                    <th>isPasswordChanged</th>
                 </tr>
             </thead>
             <tbody><?php
             foreach ($data['profiles'] as $gps): ?>
                 <tr id="profile_<?=$gps->getProfileID()?>" class="profileRow">
                     <td id="profile_profileID_<?=$gps->getProfileID()?>"><?=$gps->getProfileID()?></td>
-                    <td id="profile_firstName_<?=$gps->getProfileID()?>"><?=$gps->getFirstName()?></td>
-                    <td id="profile_middleName_<?=$gps->getProfileID()?>"><?=$gps->getMiddleName()?></td>
-                    <td id="profile_lastName_<?=$gps->getProfileID()?>"><?=$gps->getLastName()?></td>
                     <td id="profile_email_<?=$gps->getProfileID()?>"><?=$gps->getEmail()?></td>
                     <td id="profile_phone_<?=$gps->getProfileID()?>"><?=$gps->getPhoneNumber()?></td>
                     <td id="profile_gender_<?=$gps->getProfileID()?>"><?=$gps->getGender()?></td>
-                    <td id="profile_address_<?=$gps->getProfileID()?>"><?=$gps->getAddress()?></td>
                     <td id="profile_dob_<?=$gps->getProfileID()?>"><?=$gps->getDOB()?></td>
-                    <td id="profile_temp_<?=$gps->getProfileID()?>"><?=$gps->getTemp()?></td>
-                    <td id="profile_timeOfTemp_<?=$gps->getProfileID()?>"><?=$gps->getTimeOfTemp()?></td>
                     <td id="profile_password_<?=$gps->getProfileID()?>"><?=$gps->getPassword()?></td>
-                    <td id="profile_SSN_<?=$gps->getProfileID()?>"><?=$gps->getSSN()?></td>
                     <td id="profile_isLoggedIn_<?=$gps->getProfileID()?>"><?=$gps->isLoggedIn() ? 'true' : 'false' ?></td>
+                    <td id="profile_isEmployee_<?=$gps->getProfileID()?>"><?=$gps->isEmployee() ? 'true' : 'false' ?></td>
+                    <td id="profile_isPasswordChanged_<?=$gps->getProfileID()?>"><?=$gps->isPasswordChanged() ? 'true' : 'false' ?></td>
                 </tr><?php
             endforeach; ?>
             </tbody>

@@ -125,6 +125,10 @@ class Profile extends GenericModelObject implements JsonSerializable {
         return $this->isEmployee;
     }
     
+    public function isPasswordChanged() {
+        return $this->passwordChanged;
+    }
+    
     public function __toString() {
         $str =
             "Profile ID: [" . $this->profileID . "]\n" .
