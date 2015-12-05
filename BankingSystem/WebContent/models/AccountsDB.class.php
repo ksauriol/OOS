@@ -108,7 +108,7 @@ class AccountsDB {
      }
      
     public static function getAccountsBy($type, $value) {
-    	$allowed = ['profileID', 'bankID','SSN'];
+    	$allowed = ['bankID','SSN'];
     	$allAccounts = array();
     
     	try {

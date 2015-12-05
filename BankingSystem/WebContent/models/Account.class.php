@@ -1,11 +1,12 @@
 <?php
 class Account extends GenericModelObject {
 
-	private $accountID;
-	private $profileID;
+	private $bankID;
+	private $firstName;
+	private $lastName;
 	private $SSN;
-	
-
+	private $address;
+	private $balance;
 	
 	public function __construct($args = null) {
 		$this->arguments = $args;
@@ -16,13 +17,26 @@ class Account extends GenericModelObject {
 	public function getSSN() {
 		return $this->SSN;
 	}
-	
-	public function getProfileID() {
-		return $this->profileID;
-	}
+
 	
 	public function getAccountID() {
 		return $this->accountID;
+	}
+	
+	public function getFirstName() {
+	    return $this->firstName;
+	}
+	
+	public function getLastName() {
+	    return $this->lastName;
+	}
+	
+	public function getAddress() {
+	    return $this->address;
+	}
+	
+	public function getBalance() {
+	    return $this->balance;
 	}
 	
 	public function setProfileID($input){
@@ -32,11 +46,11 @@ class Account extends GenericModelObject {
 	
 	public function getParameters() {
 		$paramArray = array(
-				"profileID" => $this->profileID,
-				"accountID" => $this->accountID,
-				"SSN"		=> $this->SSN
-				);
-				return $paramArray;
+    		"profileID" => $this->profileID,
+    		"accountID" => $this->accountID,
+    		"SSN"		=> $this->SSN
+		);
+		return $paramArray;
 	}
 	
 	public function __toString() {
@@ -56,9 +70,12 @@ class Account extends GenericModelObject {
 			$this->profileID = 1;
 			$this->SSN = 0;
 		} else {
-				$this->validateProfileID();
-				$this->validateAccountID();
-				$this->validateSSN();
+			$this->validateAccountID();
+			$this->validateFirstName();
+			$this->validateLastName();
+			$this->validateSSN();
+			$this->validateAddress();
+			$this->validateBalance();
 		}
 	}
 	
@@ -67,11 +84,23 @@ class Account extends GenericModelObject {
 	}
 	
 	private function validateAccountID() {
-		$this->accountID = $this->extractForm($this->arguments, "accountID");
+		$this->accountID = $this->extractForm($this->arguments, "bankID");
 	}
 	
-	private function validateProfileID() {
-		$this->profileID = $this->extractForm($this->arguments, "profileID");
+	private function validateFirstName() {
+	    $this->firstName = $this->extractForm($this->arguments, "firstName");
+	}
+	
+	private function validateLastName() {
+	    $this->lastName = $this->extractForm($this->arguments, "lastName");
+	}
+	
+	private function validateAddress() {
+	    $this->address = $this->extractForm($this->arguments, "address");
+	}
+	
+	private function validateBalance() {
+	    $this->balance = $this->extractForm($this->arguments, "balance");
 	}
 }
 ?>
