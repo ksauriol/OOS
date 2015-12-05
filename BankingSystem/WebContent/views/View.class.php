@@ -3,11 +3,14 @@ class View{
 	public static function run() {
 		$profiles = ProfilesDB::getAllProfiles();
 		$accounts = AccountsDB::getAllAccounts();
-		echo "<!DOCTYPE html><html><head>";
+		echo "<!DOCTYPE html><html><style type=\"text/css\">a { font-size: 1.3em; }</style><head></head><body>";
+		?>
+        Other Views: <a href="/BankingSystem/view/login">Login View</a> | <a href="/BankingSystem/view/gps">GPS View</a>
+        <?php
 		echo "<h1>BankSystem profile list</h1>";
 		echo "<table>";
 		echo "<thead>";
-		echo "<tr><th>Profile Id</th><th>Account ID</th><th>Email</th> <th>Password</th><th>isLoggedIn</th><th>isEmployee</th></tr>";
+		echo "<tr><th>ProfilID</th><th>AccountID</th><th>Email</th> <th>Password</th><th>isLoggedIn</th><th>isEmployee</th><th>isPasswordChanged</th></tr>";
 		echo "</thead>";
 		echo "<tbody>";
 		
@@ -19,10 +22,11 @@ class View{
 			echo '<td>'.$profile->getPassword().'</td>';
 			echo '<td>'.$profile->isLoggedIn().'</td>';
 			echo '<td>'.$profile->isEmployee().'</td>';
+			echo '<td>'.$profile->isPasswordChanged().'</td>';
 			echo '</tr>';
 			$personalAccounts = AccountsDB::getAccountsBy('bankID', $profile->getAccountID()); 
 			if (!empty($personalAccounts)){
-				echo "<tr><td></td><td></td><td></td><td></td>
+				echo "<tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>
 				        <th>Account Id</th>
 				        <th>SSN</th>
 				        <th>First Name</th>
@@ -32,7 +36,7 @@ class View{
 				foreach ($personalAccounts as $acc){
 					if (!is_null($acc)){
 					//	print_r('<br>'.$acc);
-						echo '<tr><td></td><td></td><td></td><td></td>';
+						echo '<tr> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td>';
 						echo '<td>   '.$acc->getAccountID().'</td>';
 						echo '<td>   '.$acc->getSSN().'</td>';
 						echo '<td>   '.$acc->getFirstName().'</td>';
