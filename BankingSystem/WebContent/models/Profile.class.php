@@ -9,8 +9,7 @@ class Profile extends GenericModelObject implements JsonSerializable {
     private $dob;
     private $address;
     private $SSN;
-    private $timeOfTemp;
-    private $temp;
+    private $passwordChanged;
     private $password;
     private $isLoggedIn;
     private $accountID;
@@ -37,14 +36,12 @@ class Profile extends GenericModelObject implements JsonSerializable {
     	return $this->password;
     }
     
-    public function setTimeOfTemp($input) {
-    	$this->arguments['timeOfTemp']=$input;
-    	$this->validateTimeOfTemp();
+    public function setPasswordChanged() {
+    	$this->passwordChanged=true;
     }
     
-    public function setTemp($input) {
-    	$this->arguments['temp']=$input;
-    	$this->validateTemp();
+    public function getPasswordChanged() {
+    	return $this->passwordChanged;
     }
     
     public function setPassword($input) {
@@ -55,10 +52,6 @@ class Profile extends GenericModelObject implements JsonSerializable {
     public function setProfileID($input) {
         $this->arguments['profileID'] = $input;
         $this->validateProfileID();
-    }
-    
-    public function getTimeOfTemp() {
-    	return $this->timeOfTemp;
     }
     
     public function getProfileID() {
@@ -81,8 +74,20 @@ class Profile extends GenericModelObject implements JsonSerializable {
         return $this->dob;
     }
     
+    public function getSSN() {
+    	return $this->SSN;
+    }
+    
     public function getAddress() {
         return $this->address;
+    }
+    
+    public function getIsLoggedIn() {
+    	return $this->isLoogedIn;
+    }
+    
+    public function getIsEmployee() {
+    	return $this->isEmployee;
     }
     
     public function getAccountID() {
@@ -105,7 +110,8 @@ class Profile extends GenericModelObject implements JsonSerializable {
         	"password" => $this->password,
             "isLoggedIn" => $this->isLoggedIn,
             "acccountID" => $this->accountID,
-            "dateCreated" => $this->dateCreated
+            "dateCreated" => $this->dateCreated,
+        	"passwordChanged" => $this->passwordChanged
         );
         
         return $paramArray;
@@ -130,7 +136,8 @@ class Profile extends GenericModelObject implements JsonSerializable {
             "password: [" . $this->password . "]\n".
             "Is Logged In: [" . $this->isLoggedIn . "]\n" .
             "Account ID: [" . $this->accountID . "]\n" .
-            "Date Created: [" . $this->dateCreated . "]";
+            "Date Created: [" . $this->dateCreated . "]" .
+            "passwordChanged: [" . $this->passwordChanged . "]";
         
         return $str;
     }
@@ -149,6 +156,7 @@ class Profile extends GenericModelObject implements JsonSerializable {
             $this->isLoggedIn = "";
             $this->accountID = "";
             $this->dateCreated = "";
+            $this->passwordChanged=false;
         }
         else {
             $this->validateProfileID();
@@ -158,12 +166,11 @@ class Profile extends GenericModelObject implements JsonSerializable {
             $this->validateAddress();
             $this->validateDOB();
             $this->validateSSN();
-            $this->validateTimeOfTemp();
-            $this->validateTemp();
             $this->validatePassword();
             $this->validateIsLoggedIn();
             $this->validateAccountID();
             $this->validateDateCreated();
+            $this->validatePasswordChanged();
         }
     }
     
@@ -175,8 +182,8 @@ class Profile extends GenericModelObject implements JsonSerializable {
     	$this->password = $this->extractForm($this->arguments, "password");
     }
     
-    private function validateTimeOfTemp() {
-    	$this->timeOfTemp = $this->extractForm($this->arguments, "timeOfTemp");
+    private function validatePasswordChanged() {
+    	$this->passwordChanged = $this->extractForm($this->arguments, "passwordChanged");
     }
     
     private function validateSSN() {

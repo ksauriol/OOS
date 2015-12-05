@@ -19,6 +19,7 @@ class SignupController {
 		
 		switch ($action) {
 		    case 'create': self::createProfile($arguments); break;
+		    case 'password': self::changePassword($arguments);break;
 		    default: echo 'error. action: ' . $action;
 		}
 	}
@@ -26,6 +27,7 @@ class SignupController {
 	private static function createProfile($arguments) {
 	    
 	    // check arguments
+	  
 	    if (!array_key_exists(0, $arguments) || !isset($_GET['ssn']) || !isset($_GET['name']) || !isset($_GET['email'])) {
 	        self::outputMessage(self::CODE_BAD_REQUEST, 'Missing arguments', 'bankID, SSN, name, and email are required for registration.');
 	        return;
@@ -48,12 +50,13 @@ class SignupController {
 	    }
 	    
 	    // generate default password for account, and store bank ID
-	    $_GET['password'] = self::generatePassword();
+	    $_GET['password'] =  Email::sendEmail( $_GET['email'], 1);
 	    $_GET['bankID'] = $bankID; 
 	    
 	    // create the profile
 	    $profile = new Profile($_GET);
 	    if ($profile->getErrorCount() > 0) {
+	    	
 	        self::outputMessage(self::CODE_BAD_REQUEST, 'Account creation failed', 'Errors occured while processing the arguments to create the account.');
 	        return;
 	    }
@@ -67,9 +70,53 @@ class SignupController {
 	    $profile->setProfileID($result);
 	    
 	    // success
+	   
 	    self::outputMessage(self::CODE_SUCCESS, 'Registration complete', 'An account for specified member was successfully created.', $profile);
 	}
 	
+	private static function changePassword($arguments){
+		//check input make sure correct
+		if (!array_key_exists(0, $arguments) || !isset($_GET['old_password']) || !isset($_GET['new_password'])) {
+			self::outputMessage(self::CODE_BAD_REQUEST, 'Missing arguments', 'email,old_password, new_password' );
+			return;
+		}
+	
+		$email = $arguments[0];
+		//grab the profile by email given --First Argument--
+		$matchingProfile = ProfilesDB::getProfileBy('email', $email);
+		if (empty($matchingProfile)) {
+			self::outputMessage(self::CODE_BAD_REQUEST, 'Member not found', 'A member with the specified email does not exist.');
+			return;
+		}
+		//Change the password
+		
+		
+		
+		if ($matchingProfile->getPassword() == $_GET['old_password']){
+			
+			//put the new password in
+			$matchingProfile->setPassword($_GET['new_password']);
+			//This is for changing the temporary password
+			if (!$matchingProfile->getPasswordChanged()){
+				
+				if (time() < strtotime($matchingProfile->getDateCreated()) + 900000){
+					$matchingProfile->setPasswordChanged(true);
+				} else { //The 15 minute expired
+					self::outputMessage(self::CODE_BAD_REQUEST, 'Profile Expired', 'The Profile already exceeded the 15 minute window to change temporary password.');
+					ProfilesDB::deleteProfileBy('email',$email);
+					return;
+				}
+			}
+			//success
+			Email::sendEmail($email, 3);
+			ProfilesDB::editProfile($matchingProfile);
+			self::outputMessage(self::CODE_SUCCESS, 'Password Changed', 'Your password was changed correctly', $matchingProfile);
+		} else {
+			self::outputMessage(self::CODE_BAD_REQUEST, 'Authorization failed.', 'Incorrect email or password.');
+			return;
+		}
+	
+	}
 	private static function generatePassword() {
 	    return 'password'; // this will change eventually
 	}

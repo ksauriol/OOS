@@ -36,7 +36,8 @@ class ProfilesDB {
     	
     	try {
 			$db = Database::getDB ();
-			if (is_null($profile) || $profile->getErrorCount() > 0)
+			
+			/*if (is_null($profile) || $profile->getErrorCount() > 0)
 				return $profile;
 			
 			$checkProfile = ProfilesDB::getProfileBy('profileID', $profile->getProfileID());
@@ -44,23 +45,30 @@ class ProfilesDB {
 				$profile->setError('profileID', 'USER_DOES_NOT_EXIST');
 
 			if ($profile->getErrorCount() > 1)
-				return $profile;
+				return $profile; */
 			
-			$query = "UPDATE Profiles SET firstName = :firstName, password = :password, temp = :temp, timeOfTemp= :timeOfTemp,
-						address = :address, middleName = :middleName, lastName = :lastName, dob = :dob, phone = :phone
-	                 WHERE profileID = :profileID";
-	
+			$query = "UPDATE Profiles SET password = :password
+										WHERE profileID = :profileID";
+					/*accountID = :accountID, password = :password, address = :address, middleName = :middleName, 
+					email = :email, gender = :gender, SSN = :SSN, lastName = :lastName, dob = :dob, phone = :phone, 
+					dateCreated = :dateCreated, isEmployee = :isEmployee, passwordChanged = :passwordChanged
+	                 WHERE profileID = :profileID";*/
+			
+			
 			$statement = $db->prepare ($query);
-			$statement->bindValue("firstName", $profile->getFirstName());
-			$statement->bindValue("middleName", $profile->getMiddleName());
-			$statement->bindValue("lastName", $profile->getLastName());
 			$statement->bindValue(":password", $profile->getPassword());
-			$statement->bindValue(":temp", $profile->getTemp());
-			$statement->bindValue(":timeOfTemp", $profile->getTimeOfTemp());
+			$statement->bindValue(":profileID", $profile->getProfileID());
+			/*$statement->bindValue(":email", $profile->getEmail());
+			$statement->bindValue(":SSN", $profile->getSSN());
+			$statement->bindValue(":gender", $profile->getGender());
 			$statement->bindValue(":dob", $profile->getDOB());
 			$statement->bindValue(":phone", $profile->getPhoneNumber());
 			$statement->bindValue(":address", $profile->getAddress());
-			$statement->bindValue("profileID", $profile->getProfileID());
+			$statement->bindValue(":accountID", $profile->getAccountID());
+			$statement->bindValue(":dateCreated ", $profile->getDateCreated ());
+			$statement->bindValue(":isEmployee", $profile->getIsEmployee());
+			$statement->bindValue(":passwordChanged", $profile->getPasswordChanged());
+			$statement->bindValue(":SSN", $profile->getSSN());*/
 			$statement->execute ();
 			$statement->closeCursor();
 			
