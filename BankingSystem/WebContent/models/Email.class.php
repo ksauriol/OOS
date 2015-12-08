@@ -41,7 +41,7 @@ class Email {
 	 * @return string
 	 */
 	private function tempPasswordGenerator() {
-		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*';
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		$charLength = strlen($characters);
 		$randomPassword = ''; 
 		$length = 9; 
